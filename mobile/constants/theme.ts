@@ -4,6 +4,11 @@
  */
 
 import { Platform } from 'react-native';
+import {
+  MD3DarkTheme as DefaultDarkTheme,
+  MD3LightTheme as DefaultLightTheme,
+  type MD3Theme,
+} from 'react-native-paper';
 
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
@@ -51,3 +56,23 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+// Базовые темы для React Native Paper (с привязкой к нашим цветам).
+// Используются на уровне всего приложения в `PaperProvider`.
+export const PaperLightTheme: MD3Theme = {
+  ...DefaultLightTheme,
+  colors: {
+    ...DefaultLightTheme.colors,
+    primary: Colors.light.tint,
+    background: Colors.light.background,
+  },
+};
+
+export const PaperDarkTheme: MD3Theme = {
+  ...DefaultDarkTheme,
+  colors: {
+    ...DefaultDarkTheme.colors,
+    primary: Colors.dark.tint,
+    background: Colors.dark.background,
+  },
+};

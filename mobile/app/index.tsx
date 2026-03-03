@@ -1,6 +1,9 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Appbar, Button, Snackbar, Text } from 'react-native-paper';
+import { Snackbar, Text } from 'react-native-paper';
+
+import { AppHeader } from '@/components/ui/app-header';
+import { PrimaryButton } from '@/components/ui/primary-button';
 
 export default function HomeScreen() {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
@@ -15,18 +18,14 @@ export default function HomeScreen() {
 
   return (
     <>
-      <Appbar.Header mode="center-aligned">
-        <Appbar.Content title="GoNext" />
-      </Appbar.Header>
+      <AppHeader title="GoNext" />
 
       <View style={styles.container}>
         <Text variant="headlineSmall" style={styles.text}>
           Приветствую, Иван!
         </Text>
 
-        <Button mode="contained" onPress={handleButtonPress}>
-          Нажми меня
-        </Button>
+        <PrimaryButton onPress={handleButtonPress}>Нажми меня</PrimaryButton>
       </View>
 
       <Snackbar visible={snackbarVisible} onDismiss={handleDismissSnackbar} duration={2000}>
@@ -46,9 +45,6 @@ const styles = StyleSheet.create({
   text: {
     marginBottom: 16,
     textAlign: 'center',
-    color: '#000000',
-    fontSize: 20,
-    fontWeight: '600',
   },
 });
 
