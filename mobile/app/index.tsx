@@ -13,6 +13,10 @@ export default function HomeScreen() {
     router.push('/places');
   };
 
+  const handleOpenTrips = () => {
+    router.push('/trips');
+  };
+
   return (
     <>
       <AppHeader title="GoNext" />
@@ -22,7 +26,10 @@ export default function HomeScreen() {
           Приветствую, Иван!
         </Text>
 
-        <PrimaryButton onPress={handleOpenPlaces}>Перейти к местам</PrimaryButton>
+        <View style={styles.buttons}>
+          <PrimaryButton onPress={handleOpenPlaces}>Места</PrimaryButton>
+          <PrimaryButton onPress={handleOpenTrips}>Поездки</PrimaryButton>
+        </View>
       </View>
     </>
   );
@@ -36,8 +43,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   text: {
-    marginBottom: 16,
+    marginBottom: 24,
     textAlign: 'center',
+  },
+  buttons: {
+    width: '100%',
+    gap: 12,
   },
 });
 

@@ -26,6 +26,10 @@ export default function RootLayout() {
         <Stack.Screen name="places/index" />
         <Stack.Screen name="places/new" />
         <Stack.Screen name="places/[id]" />
+        <Stack.Screen name="trips/index" />
+        <Stack.Screen name="trips/new" />
+        <Stack.Screen name="trips/[id]" />
+        <Stack.Screen name="trips/[id]/add-place" />
       </Stack>
       <StatusBar style="auto" />
     </PaperProvider>
