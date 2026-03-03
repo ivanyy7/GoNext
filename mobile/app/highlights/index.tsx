@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: 'center',
+    color: '#4A4A4A',
   },
   chipsRow: {
     flexDirection: 'row',

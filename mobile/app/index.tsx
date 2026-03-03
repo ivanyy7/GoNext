@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
   text: {
     marginBottom: 24,
     textAlign: 'center',
+    color: '#3A2A6A',
   },
   buttons: {
     width: '100%',

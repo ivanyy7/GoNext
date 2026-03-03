@@ -22,7 +22,7 @@
 #### Этап 2 (локальная БД и модели)
 
 - `mobile/models/` — доменные модели данных (`Place`, `Trip`, `TripPlace`, `Highlight`), описанные в виде TypeScript‑типов.
-- `mobile/services/database.native.ts` — слой доступа к локальной базе SQLite для мобильных платформ (инициализация таблиц и CRUD‑операции для всех сущностей).
+- `mobile/services/database.native.ts` — слой доступа к локальной базе SQLite для мобильных платформ: инициализация таблиц и CRUD‑операции для всех сущностей, реализованные поверх нового async‑API `expo-sqlite` (`openDatabaseAsync`, `getAllAsync`, `runAsync`) с единым вспомогательным `executeSql`.
 - `mobile/services/database.web.ts` — упрощённая веб-реализация без SQLite (заглушка для отладки в браузере, данные не сохраняются).
 
 #### Этап 3 (режим «Места»)
