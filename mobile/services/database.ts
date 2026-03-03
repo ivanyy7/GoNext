@@ -414,6 +414,12 @@ export async function getHighlightsByTrip(tripId: number): Promise<Highlight[]> 
   return rows.map(rowToHighlight);
 }
 
+export async function getHighlightById(id: number): Promise<Highlight | null> {
+  const result = await executeSql('SELECT * FROM highlights WHERE id = ?;', [id]);
+  const rows = result.rows._array ?? [];
+  return rows.length ? rowToHighlight(rows[0]) : null;
+}
+
 export async function createHighlight(data: Omit<Highlight, 'id' | 'createdAt'>): Promise<Highlight> {
   const createdAt = new Date().toISOString();
   const photosJson = JSON.stringify(data.photos ?? []);
