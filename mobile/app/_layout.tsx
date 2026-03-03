@@ -34,6 +34,7 @@ export default function RootLayout() {
         <Stack.Screen name="highlights/index" />
         <Stack.Screen name="highlights/new" />
         <Stack.Screen name="highlights/[id]" />
+        <Stack.Screen name="settings/index" />
       </Stack>
       <StatusBar style="auto" />
     </PaperProvider>

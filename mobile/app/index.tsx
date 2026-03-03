@@ -25,6 +25,10 @@ export default function HomeScreen() {
     router.push('/highlights');
   };
 
+  const handleOpenSettings = () => {
+    router.push('/settings');
+  };
+
   return (
     <>
       <AppHeader title="GoNext" />
@@ -39,6 +43,7 @@ export default function HomeScreen() {
           <PrimaryButton onPress={handleOpenTrips}>Поездки</PrimaryButton>
           <PrimaryButton onPress={handleOpenNextPlace}>Следующее место</PrimaryButton>
           <PrimaryButton onPress={handleOpenHighlights}>Достопримечательности</PrimaryButton>
+          <PrimaryButton onPress={handleOpenSettings}>Настройки</PrimaryButton>
         </View>
       </View>
     </>
