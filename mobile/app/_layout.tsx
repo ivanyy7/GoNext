@@ -23,6 +23,9 @@ export default function RootLayout() {
     <PaperProvider theme={theme}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
+        <Stack.Screen name="places/index" />
+        <Stack.Screen name="places/new" />
+        <Stack.Screen name="places/[id]" />
       </Stack>
       <StatusBar style="auto" />
     </PaperProvider>

@@ -165,8 +165,8 @@ export async function getPlaceById(id: number): Promise<Place | null> {
   return rows.length ? rowToPlace(rows[0]) : null;
 }
 
-export async function createPlace(data: Omit<Place, 'id'>): Promise<Place> {
-  const createdAt = data.createdAt ?? new Date().toISOString();
+export async function createPlace(data: Omit<Place, 'id' | 'createdAt'>): Promise<Place> {
+  const createdAt = new Date().toISOString();
   const photosJson = JSON.stringify(data.photos ?? []);
 
   const result = await executeSql(
@@ -245,8 +245,8 @@ export async function getTripById(id: number): Promise<Trip | null> {
   return rows.length ? rowToTrip(rows[0]) : null;
 }
 
-export async function createTrip(data: Omit<Trip, 'id'>): Promise<Trip> {
-  const createdAt = data.createdAt ?? new Date().toISOString();
+export async function createTrip(data: Omit<Trip, 'id' | 'createdAt'>): Promise<Trip> {
+  const createdAt = new Date().toISOString();
 
   const result = await executeSql(
     `INSERT INTO trips (title, description, start_date, end_date, created_at, current)
@@ -403,8 +403,8 @@ export async function getHighlightsByTrip(tripId: number): Promise<Highlight[]> 
   return rows.map(rowToHighlight);
 }
 
-export async function createHighlight(data: Omit<Highlight, 'id'>): Promise<Highlight> {
-  const createdAt = data.createdAt ?? new Date().toISOString();
+export async function createHighlight(data: Omit<Highlight, 'id' | 'createdAt'>): Promise<Highlight> {
+  const createdAt = new Date().toISOString();
   const photosJson = JSON.stringify(data.photos ?? []);
 
   const result = await executeSql(

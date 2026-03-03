@@ -1,19 +1,16 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Snackbar, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
+import { useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
 import { PrimaryButton } from '@/components/ui/primary-button';
 
 export default function HomeScreen() {
-  const [snackbarVisible, setSnackbarVisible] = React.useState(false);
+  const router = useRouter();
 
-  const handleButtonPress = () => {
-    setSnackbarVisible(true);
-  };
-
-  const handleDismissSnackbar = () => {
-    setSnackbarVisible(false);
+  const handleOpenPlaces = () => {
+    router.push('/places');
   };
 
   return (
@@ -25,12 +22,8 @@ export default function HomeScreen() {
           Приветствую, Иван!
         </Text>
 
-        <PrimaryButton onPress={handleButtonPress}>Нажми меня</PrimaryButton>
+        <PrimaryButton onPress={handleOpenPlaces}>Перейти к местам</PrimaryButton>
       </View>
-
-      <Snackbar visible={snackbarVisible} onDismiss={handleDismissSnackbar} duration={2000}>
-        Кнопка нажата
-      </Snackbar>
     </>
   );
 }
