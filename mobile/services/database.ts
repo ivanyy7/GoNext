@@ -239,6 +239,17 @@ export async function getAllTrips(): Promise<Trip[]> {
   return rows.map(rowToTrip);
 }
 
+export async function getActiveTrip(): Promise<Trip | null> {
+  const result = await executeSql('SELECT * FROM trips WHERE current = 1 ORDER BY created_at DESC;');
+  const rows = result.rows._array ?? [];
+  if (rows.length > 0) {
+    return rowToTrip(rows[0]);
+  }
+
+  const allTrips = await getAllTrips();
+  return allTrips.length > 0 ? allTrips[0] : null;
+}
+
 export async function getTripById(id: number): Promise<Trip | null> {
   const result = await executeSql('SELECT * FROM trips WHERE id = ?;', [id]);
   const rows = result.rows._array ?? [];
