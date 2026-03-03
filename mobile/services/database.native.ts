@@ -4,25 +4,50 @@ import { Highlight, Place, Trip, TripPlace } from '@/models';
 
 const DB_NAME = 'gonext.db';
 
-// Открываем (или создаём) локальную базу данных приложения.
-const db = SQLite.openDatabase(DB_NAME);
+// Открываем (или создаём) локальную базу данных приложения с помощью нового async‑API.
+// Кэшируем промис, чтобы база открывалась только один раз.
+let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
 
-type SQLResultSet = SQLite.SQLResultSet;
+async function getDb(): Promise<SQLite.SQLiteDatabase> {
+  if (!dbPromise) {
+    dbPromise = SQLite.openDatabaseAsync(DB_NAME);
+  }
+  return dbPromise;
+}
 
-function executeSql(sql: string, params: (string | number | null)[] = []): Promise<SQLResultSet> {
-  return new Promise((resolve, reject) => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        sql,
-        params,
-        (_txObj, result) => resolve(result),
-        (_txObj, error) => {
-          reject(error);
-          return false;
-        }
-      );
-    });
-  });
+type SQLResultSetRowList = {
+  _array: any[];
+};
+
+type SQLResultSet = {
+  rows: SQLResultSetRowList;
+  insertId: number | null;
+  rowsAffected: number;
+};
+
+async function executeSql(
+  sql: string,
+  params: (string | number | null)[] = []
+): Promise<SQLResultSet> {
+  const db = await getDb();
+  const trimmed = sql.trim().toUpperCase();
+
+  // Простая эвристика: SELECT → читаем все строки, остальные → команда изменения данных.
+  if (trimmed.startsWith('SELECT')) {
+    const rows = await db.getAllAsync<any>(sql, params);
+    return {
+      rows: { _array: rows },
+      insertId: null,
+      rowsAffected: rows.length,
+    };
+  }
+
+  const result = await db.runAsync(sql, params);
+  return {
+    rows: { _array: [] },
+    insertId: result.lastInsertRowId ?? null,
+    rowsAffected: result.changes,
+  };
 }
 
 // Создание таблиц, если они ещё не существуют.
