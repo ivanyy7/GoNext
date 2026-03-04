@@ -472,6 +472,36 @@ export async function createHighlight(data: Omit<Highlight, 'id' | 'createdAt'>)
   return rowToHighlight(rows[0]);
 }
 
+export async function updateHighlight(
+  id: number,
+  data: Partial<Omit<Highlight, 'id'>>
+): Promise<Highlight> {
+  const current = await getHighlightById(id);
+  if (!current) {
+    throw new Error('Достопримечательность не найдена');
+  }
+
+  const merged: Highlight = {
+    ...current,
+    ...data,
+  };
+
+  const photosJson = JSON.stringify(merged.photos ?? []);
+
+  await executeSql(
+    `UPDATE highlights
+     SET title = ?, description = ?, place_id = ?, trip_id = ?, date = ?, photos_json = ?
+     WHERE id = ?;`,
+    [merged.title, merged.description, merged.placeId, merged.tripId, merged.date, photosJson, id]
+  );
+
+  const updated = await getHighlightById(id);
+  if (!updated) {
+    throw new Error('Не удалось обновить запись о достопримечательности');
+  }
+  return updated;
+}
+
 export async function deleteHighlight(id: number): Promise<void> {
   await executeSql('DELETE FROM highlights WHERE id = ?;', [id]);
 }

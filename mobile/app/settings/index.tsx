@@ -4,6 +4,7 @@ import { Text } from 'react-native-paper';
 
 import { AppHeader } from '@/components/ui/app-header';
 import { ScreenBackground } from '@/components/ui/screen-background';
+import { MilkCard } from '@/components/ui/milk-card';
 
 export default function SettingsScreen() {
   return (
@@ -12,17 +13,17 @@ export default function SettingsScreen() {
 
       <ScreenBackground>
         <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.section}>
+          <MilkCard style={styles.section}>
             <Text variant="titleMedium" style={styles.sectionTitle}>
               Общие настройки
             </Text>
             <Text style={styles.sectionText}>
-              Здесь в будущем будут располагаться настройки режима офлайн, темы оформления и
-              другие опции приложения GoNext.
+              Здесь в будущем будут располагаться настройки режима офлайн, темы оформления и другие
+              опции приложения GoNext.
             </Text>
-          </View>
+          </MilkCard>
 
-          <View style={styles.section}>
+          <MilkCard style={styles.section}>
             <Text variant="titleMedium" style={styles.sectionTitle}>
               О приложении
             </Text>
@@ -30,7 +31,7 @@ export default function SettingsScreen() {
               GoNext — дневник путешественника. Приложение работает офлайн и хранит все данные
               локально на устройстве.
             </Text>
-          </View>
+          </MilkCard>
         </ScrollView>
       </ScreenBackground>
     </>

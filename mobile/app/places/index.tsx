@@ -7,6 +7,7 @@ import { AppHeader } from '@/components/ui/app-header';
 import type { Place } from '@/models';
 import { getAllPlaces } from '@/services/database';
 import { ScreenBackground } from '@/components/ui/screen-background';
+import { MilkCard } from '@/components/ui/milk-card';
 
 export default function PlacesListScreen() {
   const [places, setPlaces] = useState<Place[]>([]);
@@ -58,14 +59,14 @@ export default function PlacesListScreen() {
             </View>
           ) : places.length === 0 ? (
             <View style={styles.center}>
-              <View style={styles.emptyCard}>
+              <MilkCard>
                 <Text variant="titleMedium" style={styles.emptyTitle}>
                   Пока нет ни одного места
                 </Text>
                 <Text variant="bodyMedium" style={styles.emptyText}>
                   Нажми на кнопку «+», чтобы добавить первое место в свой дневник.
                 </Text>
-              </View>
+              </MilkCard>
             </View>
           ) : (
             <FlatList
@@ -84,9 +85,13 @@ export default function PlacesListScreen() {
                   left={(props) => (
                     <List.Icon
                       {...props}
-                      color="#E78A1F"
+                      color={item.liked ? '#FFD54F' : '#E78A1F'}
                       icon={
-                        item.liked ? 'star' : item.visitLater ? 'clock-outline' : 'map-marker'
+                        item.liked
+                          ? 'star'
+                          : item.visitLater
+                            ? 'clock-outline'
+                            : 'checkbox-blank-circle-outline'
                       }
                     />
                   )}
@@ -111,12 +116,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 16,
-  },
-  emptyCard: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },
   emptyTitle: {
     textAlign: 'center',

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Switch, Text, TextInput } from 'react-native-paper';
+import { Switch, Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -8,6 +8,8 @@ import { PrimaryButton } from '@/components/ui/primary-button';
 import type { Trip } from '@/models';
 import { createTrip } from '@/services/database';
 import { ScreenBackground } from '@/components/ui/screen-background';
+import { FormTextInput } from '@/components/ui/form-text-input';
+import { LabeledSwitch } from '@/components/ui/labeled-switch';
 
 export default function NewTripScreen() {
   const router = useRouter();
@@ -54,42 +56,32 @@ export default function NewTripScreen() {
 
       <ScreenBackground>
         <ScrollView contentContainerStyle={styles.content}>
-          <TextInput
-            label="Название"
-            value={title}
-            onChangeText={setTitle}
-            mode="outlined"
-            style={styles.input}
-          />
+          <FormTextInput label="Название" value={title} onChangeText={setTitle} />
 
-          <TextInput
+          <FormTextInput
             label="Описание"
             value={description}
             onChangeText={setDescription}
-            mode="outlined"
             style={styles.input}
             multiline
           />
 
-          <TextInput
+          <FormTextInput
             label="Дата начала (например, 2025-06-01)"
             value={startDate}
             onChangeText={setStartDate}
-            mode="outlined"
             style={styles.input}
           />
 
-          <TextInput
+          <FormTextInput
             label="Дата окончания (например, 2025-06-10)"
             value={endDate}
             onChangeText={setEndDate}
-            mode="outlined"
             style={styles.input}
           />
 
           <View style={styles.row}>
-            <Text>Сделать текущей поездкой</Text>
-            <Switch value={current} onValueChange={setCurrent} />
+            <LabeledSwitch label="Сделать текущей поездкой" value={current} onValueChange={setCurrent} />
           </View>
 
           <PrimaryButton

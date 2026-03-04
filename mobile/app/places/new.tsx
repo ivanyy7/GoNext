@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Alert, Image, Platform, ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Alert, Image, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { Switch, Text, TextInput } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -10,6 +10,8 @@ import type { Place } from '@/models';
 import { createPlace, updatePlace } from '@/services/database';
 import { ScreenBackground } from '@/components/ui/screen-background';
 import { savePlacePhoto, resolvePhotoUri } from '@/services/photo-storage';
+import { FormTextInput } from '@/components/ui/form-text-input';
+import { LabeledSwitch } from '@/components/ui/labeled-switch';
 
 export default function NewPlaceScreen() {
   const router = useRouter();
@@ -107,67 +109,48 @@ export default function NewPlaceScreen() {
 
       <ScreenBackground>
         <ScrollView contentContainerStyle={styles.content}>
-          <TextInput
-            label={name ? undefined : 'Название'}
+          <FormTextInput
+            label="Название"
             value={name}
             onChangeText={setName}
-            mode="outlined"
-            style={styles.input}
           />
 
-          <TextInput
-            label={description ? undefined : 'Описание'}
+          <FormTextInput
+            label="Описание"
             value={description}
             onChangeText={setDescription}
-            mode="outlined"
             style={styles.input}
             multiline
           />
 
           <View style={styles.flagsRow}>
-            <View style={styles.flagRow}>
-              <TouchableOpacity
-                onPress={() =>
-                  Alert.alert(
-                    'Посетить позже',
-                    'Отметь, если это место пока в планах и ты ещё туда не добрался.'
-                  )
-                }
-              >
-                <Text style={styles.flagTitle}>Посетить позже</Text>
-              </TouchableOpacity>
-              <Switch value={visitLater} onValueChange={setVisitLater} />
-            </View>
+            <LabeledSwitch
+              label="Посетить позже"
+              helperText="Отметь, если это место пока в планах и ты ещё туда не добрался."
+              value={visitLater}
+              onValueChange={setVisitLater}
+            />
 
-            <View style={styles.flagRow}>
-              <TouchableOpacity
-                onPress={() =>
-                  Alert.alert(
-                    'Понравилось',
-                    'Отметь, если это одно из любимых мест, к которым особенно хочется вернуться.'
-                  )
-                }
-              >
-                <Text style={styles.flagTitle}>Понравилось</Text>
-              </TouchableOpacity>
-              <Switch value={liked} onValueChange={setLiked} />
-            </View>
+            <LabeledSwitch
+              label="Понравилось"
+              helperText="Отметь, если это одно из любимых мест, к которым особенно хочется вернуться."
+              value={liked}
+              onValueChange={setLiked}
+            />
           </View>
 
           <View style={styles.row}>
-            <TextInput
+            <FormTextInput
               label="Широта (lat)"
               value={latitude}
               onChangeText={setLatitude}
-              mode="outlined"
               style={[styles.input, styles.coordInput]}
               keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
             />
-            <TextInput
+            <FormTextInput
               label="Долгота (lon)"
               value={longitude}
               onChangeText={setLongitude}
-              mode="outlined"
               style={[styles.input, styles.coordInput]}
               keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
             />
@@ -202,9 +185,7 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 16,
   },
-  input: {
-    marginBottom: 8,
-  },
+  input: {},
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -215,17 +196,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 16,
     marginBottom: 4,
-  },
-  flagRow: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  flagTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#2A2340',
   },
   coordInput: {
     flex: 1,

@@ -59,3 +59,37 @@ export async function deleteAllPlacePhotos(placeId: number): Promise<void> {
   }
 }
 
+export async function saveHighlightPhoto(highlightId: number, sourceUri: string): Promise<string> {
+  if (Platform.OS === 'web') {
+    throw new Error('Хранение фото поддерживается только на мобильных платформах.');
+  }
+
+  const dir = `${PHOTOS_ROOT}highlights/${highlightId}/`;
+  await ensureDir(dir);
+
+  const extensionMatch = sourceUri.split('?')[0].split('.').pop();
+  const extension = extensionMatch && extensionMatch.length <= 5 ? extensionMatch : 'jpg';
+
+  const fileName = `photo-${Date.now()}-${Math.random().toString(36).slice(2)}.${extension}`;
+  const destination = `${dir}${fileName}`;
+
+  await FileSystem.copyAsync({ from: sourceUri, to: destination });
+
+  // Относительный путь, который будем хранить в БД.
+  return `highlights/${highlightId}/${fileName}`;
+}
+
+export async function deleteAllHighlightPhotos(highlightId: number): Promise<void> {
+  if (Platform.OS === 'web') {
+    return;
+  }
+
+  const dir = `${PHOTOS_ROOT}highlights/${highlightId}/`;
+  try {
+    await FileSystem.deleteAsync(dir, { idempotent: true });
+  } catch {
+    // Если папки нет или уже удалена — просто игнорируем.
+  }
+}
+
+

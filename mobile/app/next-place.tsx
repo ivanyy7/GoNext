@@ -7,6 +7,7 @@ import type { Place, Trip, TripPlace } from '@/models';
 import { getActiveTrip, getPlaceById, getTripPlaces, updateTripPlace } from '@/services/database';
 import { PrimaryButton } from '@/components/ui/primary-button';
 import { ScreenBackground } from '@/components/ui/screen-background';
+import { MilkCard } from '@/components/ui/milk-card';
 
 type NextPlaceState =
   | { status: 'loading' }
@@ -108,24 +109,30 @@ export default function NextPlaceScreen() {
         <ScrollView contentContainerStyle={styles.content}>
           {state.status === 'loading' && (
             <View style={styles.center}>
-              <ActivityIndicator />
-              <Text style={styles.message}>Определяем следующую точку маршрута…</Text>
+              <MilkCard>
+                <ActivityIndicator />
+                <Text style={styles.message}>Определяем следующую точку маршрута…</Text>
+              </MilkCard>
             </View>
           )}
 
           {state.status === 'no-trips' && (
             <View style={styles.center}>
-              <Text style={styles.message}>
-                Пока нет ни одной поездки. Создай поездку, чтобы увидеть следующее место.
-              </Text>
+              <MilkCard>
+                <Text style={styles.message}>
+                  Пока нет ни одной поездки. Создай поездку, чтобы увидеть следующее место.
+                </Text>
+              </MilkCard>
             </View>
           )}
 
           {state.status === 'no-next-place' && (
             <View style={styles.center}>
-              <Text style={styles.message}>
-                В текущей поездке «{state.trip.title}» больше нет непосещённых мест.
-              </Text>
+              <MilkCard>
+                <Text style={styles.message}>
+                  В текущей поездке «{state.trip.title}» больше нет непосещённых мест.
+                </Text>
+              </MilkCard>
             </View>
           )}
 

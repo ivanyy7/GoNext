@@ -7,6 +7,7 @@ import { AppHeader } from '@/components/ui/app-header';
 import type { Highlight, Trip } from '@/models';
 import { getActiveTrip, getAllHighlights, getHighlightsByTrip } from '@/services/database';
 import { ScreenBackground } from '@/components/ui/screen-background';
+import { MilkCard } from '@/components/ui/milk-card';
 
 type FilterMode = 'all' | 'current';
 
@@ -93,14 +94,14 @@ export default function HighlightsListScreen() {
           </View>
         ) : highlights.length === 0 ? (
           <View style={styles.center}>
-            <View style={styles.emptyCard}>
+            <MilkCard>
               <Text variant="titleMedium" style={styles.emptyTitle}>
                 Пока нет ни одной записи
               </Text>
               <Text variant="bodyMedium" style={styles.emptyText}>
                 Нажми на «+», чтобы сохранить первую яркую достопримечательность или момент.
               </Text>
-            </View>
+            </MilkCard>
           </View>
         ) : (
             <FlatList
@@ -114,7 +115,9 @@ export default function HighlightsListScreen() {
                   title={item.title}
                   description={formatDate(item)}
                   onPress={() => handleOpenHighlight(item.id)}
-                  left={(props) => <List.Icon {...props} icon="star" />}
+                  titleStyle={styles.itemTitle}
+                  descriptionStyle={styles.itemDescription}
+                  left={(props) => <List.Icon {...props} color="#E78A1F" icon="star" />}
                 />
               )}
             />
@@ -161,11 +164,12 @@ const styles = StyleSheet.create({
     right: 16,
     bottom: 16,
   },
-  emptyCard: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  itemTitle: {
+    color: '#2A2340',
+    fontWeight: '500',
+  },
+  itemDescription: {
+    color: '#4A4658',
   },
   emptyTitle: {
     textAlign: 'center',

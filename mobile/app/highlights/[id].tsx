@@ -13,6 +13,7 @@ import {
   getTripById,
 } from '@/services/database';
 import { ScreenBackground } from '@/components/ui/screen-background';
+import { deleteAllHighlightPhotos, resolvePhotoUri } from '@/services/photo-storage';
 
 export default function HighlightDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -67,6 +68,12 @@ export default function HighlightDetailsScreen() {
         style: 'destructive',
         onPress: async () => {
           try {
+            try {
+              await deleteAllHighlightPhotos(highlight.id);
+            } catch (error) {
+              console.error('Не удалось удалить фото достопримечательности с устройства', error);
+            }
+
             await deleteHighlight(highlight.id);
             router.back();
           } catch (error) {
@@ -119,7 +126,11 @@ export default function HighlightDetailsScreen() {
           {highlight.photos.length > 0 && (
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {highlight.photos.map((uri) => (
-                <Image key={uri} source={{ uri }} style={styles.photo} />
+                <Image
+                  key={uri}
+                  source={{ uri: resolvePhotoUri(uri) }}
+                  style={styles.photo}
+                />
               ))}
             </ScrollView>
           )}

@@ -7,8 +7,10 @@ import { useRouter } from 'expo-router';
 import { AppHeader } from '@/components/ui/app-header';
 import { PrimaryButton } from '@/components/ui/primary-button';
 import type { Highlight, Trip } from '@/models';
-import { createHighlight, getActiveTrip } from '@/services/database';
+import { createHighlight, getActiveTrip, updateHighlight } from '@/services/database';
 import { ScreenBackground } from '@/components/ui/screen-background';
+import { FormTextInput } from '@/components/ui/form-text-input';
+import { saveHighlightPhoto, resolvePhotoUri } from '@/services/photo-storage';
 
 export default function NewHighlightScreen() {
   const router = useRouter();
@@ -36,16 +38,31 @@ export default function NewHighlightScreen() {
 
     setSaving(true);
     try {
-      const data: Omit<Highlight, 'id' | 'createdAt'> = {
+      // Сначала создаём запись без фотографий, чтобы получить её id.
+      const baseData: Omit<Highlight, 'id' | 'createdAt'> = {
         title: title.trim(),
         description: description.trim() || null,
         placeId: null,
         tripId: activeTrip ? activeTrip.id : null,
         date: date.trim() || null,
-        photos,
+        photos: [],
       };
 
-      await createHighlight(data);
+      const highlight = await createHighlight(baseData);
+
+      // Затем копируем выбранные фото в нашу папку и сохраняем относительные пути в БД.
+      if (photos.length > 0) {
+        const savedPhotoPaths: string[] = [];
+        for (const uri of photos) {
+          const relativePath = await saveHighlightPhoto(highlight.id, uri);
+          savedPhotoPaths.push(relativePath);
+        }
+
+        if (savedPhotoPaths.length > 0) {
+          await updateHighlight(highlight.id, { photos: savedPhotoPaths });
+        }
+      }
+
       router.back();
     } catch (error) {
       console.error('Не удалось сохранить запись о достопримечательности', error);
@@ -90,28 +107,20 @@ export default function NewHighlightScreen() {
             <Text style={styles.tripInfo}>Текущая поездка не выбрана.</Text>
           )}
 
-          <TextInput
-            label="Название"
-            value={title}
-            onChangeText={setTitle}
-            mode="outlined"
-            style={styles.input}
-          />
+          <FormTextInput label="Название" value={title} onChangeText={setTitle} />
 
-          <TextInput
+          <FormTextInput
             label="Описание / заметка"
             value={description}
             onChangeText={setDescription}
-            mode="outlined"
             style={styles.input}
             multiline
           />
 
-          <TextInput
+          <FormTextInput
             label="Дата и время (ISO, можно отредактировать)"
             value={date}
             onChangeText={setDate}
-            mode="outlined"
             style={styles.input}
           />
 

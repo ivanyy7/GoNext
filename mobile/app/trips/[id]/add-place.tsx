@@ -88,7 +88,13 @@ export default function TripAddPlaceScreen() {
                 title={item.name}
                 description={item.description ?? undefined}
                 onPress={() => handleSelectPlace(item)}
-                left={(props) => <List.Icon {...props} icon="map-marker-plus" />}
+                left={(props) => (
+                  <List.Icon
+                    {...props}
+                    color="#E78A1F"
+                    icon="checkbox-blank-circle-outline"
+                  />
+                )}
               />
             )}
           />

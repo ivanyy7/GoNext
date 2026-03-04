@@ -7,6 +7,7 @@ import { AppHeader } from '@/components/ui/app-header';
 import type { Trip } from '@/models';
 import { getAllTrips } from '@/services/database';
 import { ScreenBackground } from '@/components/ui/screen-background';
+import { MilkCard } from '@/components/ui/milk-card';
 
 export default function TripsListScreen() {
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -67,14 +68,14 @@ export default function TripsListScreen() {
             </View>
           ) : trips.length === 0 ? (
             <View style={styles.center}>
-              <View style={styles.emptyCard}>
+              <MilkCard>
                 <Text variant="titleMedium" style={styles.emptyTitle}>
                   Пока нет ни одной поездки
                 </Text>
                 <Text variant="bodyMedium" style={styles.emptyText}>
                   Нажми на «+», чтобы спланировать своё первое путешествие.
                 </Text>
-              </View>
+              </MilkCard>
             </View>
           ) : (
             <FlatList
@@ -115,12 +116,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 16,
-  },
-  emptyCard: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },
   emptyTitle: {
     textAlign: 'center',

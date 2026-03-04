@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { Switch, Text, TextInput } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -19,6 +19,8 @@ import type { Place } from '@/models';
 import { deletePlace, getPlaceById, updatePlace } from '@/services/database';
 import { ScreenBackground } from '@/components/ui/screen-background';
 import { deleteAllPlacePhotos, resolvePhotoUri, savePlacePhoto } from '@/services/photo-storage';
+import { FormTextInput } from '@/components/ui/form-text-input';
+import { LabeledSwitch } from '@/components/ui/labeled-switch';
 
 export default function PlaceDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -211,67 +213,44 @@ export default function PlaceDetailsScreen() {
 
       <ScreenBackground>
         <ScrollView contentContainerStyle={styles.content}>
-          <TextInput
-            label={name ? undefined : 'Название'}
-            value={name}
-            onChangeText={setName}
-            mode="outlined"
-            style={styles.input}
-          />
+          <FormTextInput label="Название" value={name} onChangeText={setName} />
 
-          <TextInput
-            label={description ? undefined : 'Описание'}
+          <FormTextInput
+            label="Описание"
             value={description}
             onChangeText={setDescription}
-            mode="outlined"
             style={styles.input}
             multiline
           />
 
           <View style={styles.flagsRow}>
-            <View style={styles.flagRow}>
-              <TouchableOpacity
-                onPress={() =>
-                  Alert.alert(
-                    'Посетить позже',
-                    'Отметь, если это место пока запланировано и ещё не посещено.'
-                  )
-                }
-              >
-                <Text style={styles.flagTitle}>Посетить позже</Text>
-              </TouchableOpacity>
-              <Switch value={visitLater} onValueChange={setVisitLater} />
-            </View>
+            <LabeledSwitch
+              label="Посетить позже"
+              helperText="Отметь, если это место пока запланировано и ещё не посещено."
+              value={visitLater}
+              onValueChange={setVisitLater}
+            />
 
-            <View style={styles.flagRow}>
-              <TouchableOpacity
-                onPress={() =>
-                  Alert.alert(
-                    'Понравилось',
-                    'Отметь, если это одно из любимых мест, к которым особенно хочется возвращаться.'
-                  )
-                }
-              >
-                <Text style={styles.flagTitle}>Понравилось</Text>
-              </TouchableOpacity>
-              <Switch value={liked} onValueChange={setLiked} />
-            </View>
+            <LabeledSwitch
+              label="Понравилось"
+              helperText="Отметь, если это одно из любимых мест, к которым особенно хочется возвращаться."
+              value={liked}
+              onValueChange={setLiked}
+            />
           </View>
 
           <View style={styles.row}>
-            <TextInput
+            <FormTextInput
               label="Широта (lat)"
               value={latitude}
               onChangeText={setLatitude}
-              mode="outlined"
               style={[styles.input, styles.coordInput]}
               keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
             />
-            <TextInput
+            <FormTextInput
               label="Долгота (lon)"
               value={longitude}
               onChangeText={setLongitude}
-              mode="outlined"
               style={[styles.input, styles.coordInput]}
               keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
             />
@@ -345,17 +324,6 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 16,
     marginBottom: 4,
-  },
-  flagRow: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  flagTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#2A2340',
   },
   coordInput: {
     flex: 1,

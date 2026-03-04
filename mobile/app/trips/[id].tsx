@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
-import { IconButton, List, Switch, Text, TextInput } from 'react-native-paper';
+import { IconButton, List, Switch, Text } from 'react-native-paper';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -15,6 +15,8 @@ import {
   updateTrip,
   updateTripPlace,
 } from '@/services/database';
+import { FormTextInput } from '@/components/ui/form-text-input';
+import { LabeledSwitch } from '@/components/ui/labeled-switch';
 
 type TripPlaceWithPlace = TripPlace & { place: Place | null };
 
@@ -185,42 +187,32 @@ export default function TripDetailsScreen() {
       <AppHeader title="Поездка" />
 
       <ScrollView contentContainerStyle={styles.content}>
-        <TextInput
-          label="Название"
-          value={title}
-          onChangeText={setTitle}
-          mode="outlined"
-          style={styles.input}
-        />
+        <FormTextInput label="Название" value={title} onChangeText={setTitle} />
 
-        <TextInput
+        <FormTextInput
           label="Описание"
           value={description}
           onChangeText={setDescription}
-          mode="outlined"
           style={styles.input}
           multiline
         />
 
-        <TextInput
+        <FormTextInput
           label="Дата начала"
           value={startDate}
           onChangeText={setStartDate}
-          mode="outlined"
           style={styles.input}
         />
 
-        <TextInput
+        <FormTextInput
           label="Дата окончания"
           value={endDate}
           onChangeText={setEndDate}
-          mode="outlined"
           style={styles.input}
         />
 
         <View style={styles.row}>
-          <Text>Текущая поездка</Text>
-          <Switch value={current} onValueChange={setCurrent} />
+          <LabeledSwitch label="Текущая поездка" value={current} onValueChange={setCurrent} />
         </View>
 
         <PrimaryButton onPress={handleSaveTrip}>Сохранить поездку</PrimaryButton>
@@ -244,7 +236,13 @@ export default function TripDetailsScreen() {
               key={item.id}
               title={item.place?.name ?? 'Место'}
               description={item.place?.description ?? undefined}
-              left={(props) => <List.Icon {...props} icon="map-marker" />}
+              left={(props) => (
+                <List.Icon
+                  {...props}
+                  color="#E78A1F"
+                  icon="checkbox-blank-circle-outline"
+                />
+              )}
               right={() => (
                 <View style={styles.row}>
                   <IconButton

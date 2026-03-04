@@ -14,3 +14,12 @@ export async function deleteAllPlacePhotos(placeId: number): Promise<void> {
   // Ничего не делаем.
 }
 
+export async function saveHighlightPhoto(highlightId: number, sourceUri: string): Promise<string> {
+  // На не‑mobile платформах просто возвращаем исходный URI.
+  return sourceUri;
+}
+
+export async function deleteAllHighlightPhotos(highlightId: number): Promise<void> {
+  // Ничего не делаем.
+}
+
