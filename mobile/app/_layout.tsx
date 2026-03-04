@@ -5,12 +5,25 @@ import 'react-native-reanimated';
 import { PaperProvider } from 'react-native-paper';
 
 import { PaperDarkTheme, PaperLightTheme } from '@/constants/theme';
-import { ThemePreferenceProvider, useThemePreference } from '@/context/theme-preference';
+import {
+  DarkAccentColors,
+  ThemePreferenceProvider,
+  useThemePreference,
+} from '@/context/theme-preference';
 import { initDatabase } from '@/services/database';
 
 function RootLayoutInner() {
-  const { mode } = useThemePreference();
-  const theme = mode === 'dark' ? PaperDarkTheme : PaperLightTheme;
+  const { mode, darkAccentIndex } = useThemePreference();
+  const theme =
+    mode === 'dark'
+      ? {
+          ...PaperDarkTheme,
+          colors: {
+            ...PaperDarkTheme.colors,
+            primary: DarkAccentColors[darkAccentIndex] ?? PaperDarkTheme.colors.primary,
+          },
+        }
+      : PaperLightTheme;
 
   useEffect(() => {
     initDatabase().catch((error) => {

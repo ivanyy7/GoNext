@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
-import { ActivityIndicator, FAB, List, Text } from 'react-native-paper';
+import { ActivityIndicator, FAB, List, Text, useTheme } from 'react-native-paper';
 import { useFocusEffect, useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -14,6 +14,7 @@ export default function TripsListScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
+  const theme = useTheme();
 
   const loadTrips = async () => {
     try {
@@ -100,7 +101,12 @@ export default function TripsListScreen() {
             />
           )}
 
-          <FAB style={styles.fab} icon="plus" onPress={handleAddTrip} />
+          <FAB
+            style={[styles.fab, { backgroundColor: theme.colors.primary }]}
+            icon="plus"
+            color="#000000"
+            onPress={handleAddTrip}
+          />
         </View>
       </ScreenBackground>
     </>

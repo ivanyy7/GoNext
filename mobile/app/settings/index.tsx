@@ -1,14 +1,14 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { IconButton, Text } from 'react-native-paper';
 
 import { AppHeader } from '@/components/ui/app-header';
 import { ScreenBackground } from '@/components/ui/screen-background';
 import { MilkCard } from '@/components/ui/milk-card';
-import { useThemePreference } from '@/context/theme-preference';
+import { DarkAccentColors, useThemePreference } from '@/context/theme-preference';
 
 export default function SettingsScreen() {
-  const { mode, setMode } = useThemePreference();
+  const { mode, setMode, darkAccentIndex, setDarkAccentIndex } = useThemePreference();
   const isDark = mode === 'dark';
 
   return (
@@ -36,6 +36,31 @@ export default function SettingsScreen() {
               onPress={() => setMode(isDark ? 'light' : 'dark')}
             />
           </MilkCard>
+
+          {isDark && (
+            <MilkCard style={[styles.section, styles.accentSection]}>
+              <Text style={styles.accentLabel}>Основной цвет тёмной темы</Text>
+              <View style={styles.accentRow}>
+                {DarkAccentColors.map((color, index) => {
+                  const selected = index === darkAccentIndex;
+                  return (
+                    <TouchableOpacity
+                      key={color}
+                      onPress={() => setDarkAccentIndex(index)}
+                      style={[
+                        styles.accentCircle,
+                        {
+                          backgroundColor: color,
+                          borderColor: selected ? '#000000' : 'transparent',
+                          borderWidth: selected ? 2 : 1,
+                        },
+                      ]}
+                    />
+                  );
+                })}
+              </View>
+            </MilkCard>
+          )}
         </ScrollView>
       </ScreenBackground>
     </>
@@ -67,6 +92,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#2A2340',
+  },
+  accentSection: {
+    gap: 12,
+  },
+  accentLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#2A2340',
+    marginBottom: 4,
+  },
+  accentRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  accentCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
   },
 });
 

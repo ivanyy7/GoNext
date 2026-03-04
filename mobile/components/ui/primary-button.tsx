@@ -15,7 +15,13 @@ export function PrimaryButton({
   const isDark = theme.dark;
 
   const gradientColors = isDark
-    ? ['#4A3A86', '#5B4A9A', '#6C5BAF', '#5B4A9A', '#4A3A86']
+    ? [
+        theme.colors.primary,
+        theme.colors.primary,
+        theme.colors.primary,
+        theme.colors.primary,
+        theme.colors.primary,
+      ]
     : ['#D3C2FF', '#D9CCFF', '#E0D6FF', '#D9CCFF', '#D3C2FF'];
 
   return (

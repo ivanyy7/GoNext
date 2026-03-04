@@ -127,7 +127,12 @@ export default function HighlightsListScreen() {
             />
           )}
 
-          <FAB style={styles.fab} icon="plus" onPress={handleAddHighlight} />
+          <FAB
+            style={[styles.fab, { backgroundColor: theme.colors.primary }]}
+            icon="plus"
+            color="#000000"
+            onPress={handleAddHighlight}
+          />
         </View>
       </ScreenBackground>
     </>

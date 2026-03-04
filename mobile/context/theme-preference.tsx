@@ -6,7 +6,24 @@ type ThemeMode = 'light' | 'dark';
 type ThemePreferenceContextValue = {
   mode: ThemeMode;
   setMode: (mode: ThemeMode) => void;
+  darkAccentIndex: number;
+  setDarkAccentIndex: (index: number) => void;
 };
+
+// Набор безопасных акцентных цветов для тёмной темы.
+// Используются только как оттенок primary, не влияют на фон и текст.
+export const DarkAccentColors: string[] = [
+  '#EADDFF',
+  '#FFB3C6',
+  '#FFE082',
+  '#C5E1A5',
+  '#80DEEA',
+  '#81D4FA',
+  '#B39DDB',
+  '#F48FB1',
+  '#FFAB91',
+  '#B0BEC5',
+];
 
 const ThemePreferenceContext = createContext<ThemePreferenceContextValue | undefined>(
   undefined
@@ -21,13 +38,16 @@ export function ThemePreferenceProvider({ children }: ThemePreferenceProviderPro
   const initialMode: ThemeMode = systemScheme === 'dark' ? 'dark' : 'light';
 
   const [mode, setMode] = useState<ThemeMode>(initialMode);
+  const [darkAccentIndex, setDarkAccentIndex] = useState(0);
 
   const value = useMemo(
     () => ({
       mode,
       setMode,
+      darkAccentIndex,
+      setDarkAccentIndex,
     }),
-    [mode]
+    [mode, darkAccentIndex]
   );
 
   return (

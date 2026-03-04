@@ -104,7 +104,12 @@ export default function PlacesListScreen() {
             />
           )}
 
-          <FAB style={styles.fab} icon="plus" onPress={handleAddPlace} />
+          <FAB
+            style={[styles.fab, { backgroundColor: theme.colors.primary }]}
+            icon="plus"
+            color="#000000"
+            onPress={handleAddPlace}
+          />
         </View>
       </ScreenBackground>
     </>
