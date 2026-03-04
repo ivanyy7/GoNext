@@ -67,9 +67,14 @@ export default function TripsListScreen() {
             </View>
           ) : trips.length === 0 ? (
             <View style={styles.center}>
-              <Text variant="bodyMedium" style={styles.emptyText}>
-                Пока нет ни одной поездки. Нажми на кнопку «+», чтобы создать первую.
-              </Text>
+              <View style={styles.emptyCard}>
+                <Text variant="titleMedium" style={styles.emptyTitle}>
+                  Пока нет ни одной поездки
+                </Text>
+                <Text variant="bodyMedium" style={styles.emptyText}>
+                  Нажми на «+», чтобы спланировать своё первое путешествие.
+                </Text>
+              </View>
             </View>
           ) : (
             <FlatList
@@ -111,9 +116,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 16,
   },
+  emptyCard: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  },
+  emptyTitle: {
+    textAlign: 'center',
+    marginBottom: 8,
+    fontWeight: '600',
+    color: '#757083',
+    fontSize: 20,
+  },
   emptyText: {
     textAlign: 'center',
-    color: '#4A4A4A',
+    fontSize: 17,
+    color: '#827F8D',
   },
   fab: {
     position: 'absolute',

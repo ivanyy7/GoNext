@@ -58,9 +58,14 @@ export default function PlacesListScreen() {
             </View>
           ) : places.length === 0 ? (
             <View style={styles.center}>
-              <Text variant="bodyMedium" style={styles.emptyText}>
-                Пока нет ни одного места. Нажми на кнопку «+», чтобы добавить первое.
-              </Text>
+              <View style={styles.emptyCard}>
+                <Text variant="titleMedium" style={styles.emptyTitle}>
+                  Пока нет ни одного места
+                </Text>
+                <Text variant="bodyMedium" style={styles.emptyText}>
+                  Нажми на кнопку «+», чтобы добавить первое место в свой дневник.
+                </Text>
+              </View>
             </View>
           ) : (
             <FlatList
@@ -104,9 +109,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 16,
   },
+  emptyCard: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  },
+  emptyTitle: {
+    textAlign: 'center',
+    marginBottom: 8,
+    fontWeight: '600',
+    color: '#757083',
+    fontSize: 20,
+  },
   emptyText: {
     textAlign: 'center',
-    color: '#4A4A4A',
+    fontSize: 17,
+    color: '#827F8D',
   },
   fab: {
     position: 'absolute',

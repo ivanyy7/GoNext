@@ -74,26 +74,35 @@ export default function HighlightsListScreen() {
               selected={mode === 'current'}
               onPress={() => setMode('current')}
               disabled={!activeTrip}
+            textStyle={styles.chipText}
             >
               {activeTrip ? `Текущая поездка: ${activeTrip.title}` : 'Нет текущей поездки'}
             </Chip>
-            <Chip selected={mode === 'all'} onPress={() => setMode('all')}>
+          <Chip
+            selected={mode === 'all'}
+            onPress={() => setMode('all')}
+            textStyle={styles.chipTextAll}
+          >
               Все
             </Chip>
           </View>
 
-          {loading ? (
-            <View style={styles.center}>
-              <ActivityIndicator />
-            </View>
-          ) : highlights.length === 0 ? (
-            <View style={styles.center}>
+        {loading ? (
+          <View style={styles.center}>
+            <ActivityIndicator />
+          </View>
+        ) : highlights.length === 0 ? (
+          <View style={styles.center}>
+            <View style={styles.emptyCard}>
+              <Text variant="titleMedium" style={styles.emptyTitle}>
+                Пока нет ни одной записи
+              </Text>
               <Text variant="bodyMedium" style={styles.emptyText}>
-                Пока нет ни одной записи о достопримечательностях. Нажми «+», чтобы создать
-                первую.
+                Нажми на «+», чтобы сохранить первую яркую достопримечательность или момент.
               </Text>
             </View>
-          ) : (
+          </View>
+        ) : (
             <FlatList
               data={highlights}
               keyExtractor={(item) => String(item.id)}
@@ -130,7 +139,8 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: 'center',
-    color: '#4A4A4A',
+    fontSize: 17,
+    color: '#3E3A4F',
   },
   chipsRow: {
     flexDirection: 'row',
@@ -138,10 +148,31 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     gap: 8,
   },
+  chipText: {
+    color: '#2A2340',
+    fontWeight: '500',
+  },
+  chipTextAll: {
+    color: '#FFFFFF',
+    fontWeight: '500',
+  },
   fab: {
     position: 'absolute',
     right: 16,
     bottom: 16,
+  },
+  emptyCard: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  },
+  emptyTitle: {
+    textAlign: 'center',
+    marginBottom: 8,
+    fontWeight: '600',
+    color: '#757083',
+    fontSize: 20,
   },
 });
 

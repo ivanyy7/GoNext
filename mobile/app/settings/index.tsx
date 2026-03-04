@@ -16,7 +16,7 @@ export default function SettingsScreen() {
             <Text variant="titleMedium" style={styles.sectionTitle}>
               Общие настройки
             </Text>
-            <Text>
+            <Text style={styles.sectionText}>
               Здесь в будущем будут располагаться настройки режима офлайн, темы оформления и
               другие опции приложения GoNext.
             </Text>
@@ -26,7 +26,7 @@ export default function SettingsScreen() {
             <Text variant="titleMedium" style={styles.sectionTitle}>
               О приложении
             </Text>
-            <Text>
+            <Text style={styles.sectionText}>
               GoNext — дневник путешественника. Приложение работает офлайн и хранит все данные
               локально на устройстве.
             </Text>
@@ -47,6 +47,11 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     marginBottom: 4,
+    color: '#2A2340',
+    fontWeight: '600',
+  },
+  sectionText: {
+    color: '#3E3A4F',
   },
 });
 

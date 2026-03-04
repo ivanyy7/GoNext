@@ -63,7 +63,8 @@ const styles = StyleSheet.create({
   text: {
     marginBottom: 24,
     textAlign: 'center',
-    color: '#3A2A6A',
+    color: '#000000',
+    fontWeight: '500',
   },
   buttons: {
     width: '100%',

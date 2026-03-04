@@ -180,6 +180,7 @@ const styles = StyleSheet.create({
   message: {
     marginTop: 12,
     textAlign: 'center',
+    color: '#2A2340',
   },
   description: {
     marginBottom: 8,

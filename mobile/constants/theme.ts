@@ -10,8 +10,8 @@ import {
   type MD3Theme,
 } from 'react-native-paper';
 
-// Фирменный фиолетовый для GoNext
-const tintColorLight = '#6C4EFF';
+// Фирменный фиолетовый для GoNext (ещё более насыщенный)
+const tintColorLight = '#4320C0';
 const tintColorDark = '#EADDFF';
 
 export const Colors = {
