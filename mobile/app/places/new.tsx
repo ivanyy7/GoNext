@@ -25,6 +25,23 @@ export default function NewPlaceScreen() {
   const [photos, setPhotos] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
+  const handleCoordinateInput = (raw: string) => {
+    const trimmed = raw.trim();
+    // Пытаемся распарсить строку формата "lat, lon" или "lat lon"
+    const match = trimmed.match(
+      /^([+-]?\d+(?:[.,]\d+)?)\s*[, ]\s*([+-]?\d+(?:[.,]\d+)?)$/
+    );
+
+    if (match) {
+      const [_, lat, lon] = match;
+      setLatitude(lat.replace(',', '.'));
+      setLongitude(lon.replace(',', '.'));
+      return;
+    }
+
+    return trimmed;
+  };
+
   const parseCoordinate = (value: string): number | null => {
     if (!value.trim()) return null;
     const parsed = Number(value.replace(',', '.'));
@@ -143,14 +160,24 @@ export default function NewPlaceScreen() {
             <FormTextInput
               label="Широта (lat)"
               value={latitude}
-              onChangeText={setLatitude}
+              onChangeText={(text) => {
+                const result = handleCoordinateInput(text);
+                if (typeof result === 'string') {
+                  setLatitude(result);
+                }
+              }}
               style={[styles.input, styles.coordInput]}
               keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
             />
             <FormTextInput
               label="Долгота (lon)"
               value={longitude}
-              onChangeText={setLongitude}
+              onChangeText={(text) => {
+                const result = handleCoordinateInput(text);
+                if (typeof result === 'string') {
+                  setLongitude(result);
+                }
+              }}
               style={[styles.input, styles.coordInput]}
               keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
             />
