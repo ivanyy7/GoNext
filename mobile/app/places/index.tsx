@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
-import { ActivityIndicator, FAB, List, Text } from 'react-native-paper';
+import { ActivityIndicator, FAB, List, Text, useTheme } from 'react-native-paper';
 import { useFocusEffect, useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -14,6 +14,7 @@ export default function PlacesListScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
+  const theme = useTheme();
 
   const loadPlaces = async () => {
     try {
@@ -80,8 +81,11 @@ export default function PlacesListScreen() {
                   title={item.name}
                   description={item.description ?? undefined}
                   onPress={() => handleOpenPlace(item.id)}
-                  titleStyle={styles.itemTitle}
-                  descriptionStyle={styles.itemDescription}
+                  titleStyle={[styles.itemTitle, { color: theme.colors.onSurface }]}
+                  descriptionStyle={[
+                    styles.itemDescription,
+                    { color: theme.colors.onSurfaceVariant ?? theme.colors.onSurface },
+                  ]}
                   left={(props) => (
                     <List.Icon
                       {...props}
@@ -135,11 +139,8 @@ const styles = StyleSheet.create({
     bottom: 16,
   },
   itemTitle: {
-    color: '#2A2340',
     fontWeight: '500',
   },
-  itemDescription: {
-    color: '#4A4658',
-  },
+  itemDescription: {},
 });
 

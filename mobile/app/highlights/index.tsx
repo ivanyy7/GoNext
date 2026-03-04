@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Chip, FAB, List, Text } from 'react-native-paper';
+import { ActivityIndicator, Chip, FAB, List, Text, useTheme } from 'react-native-paper';
 import { useFocusEffect, useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -17,6 +17,7 @@ export default function HighlightsListScreen() {
   const [mode, setMode] = useState<FilterMode>('current');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const theme = useTheme();
   const router = useRouter();
 
   const loadData = async (filterMode: FilterMode) => {
@@ -115,8 +116,11 @@ export default function HighlightsListScreen() {
                   title={item.title}
                   description={formatDate(item)}
                   onPress={() => handleOpenHighlight(item.id)}
-                  titleStyle={styles.itemTitle}
-                  descriptionStyle={styles.itemDescription}
+                  titleStyle={[styles.itemTitle, { color: theme.colors.onSurface }]}
+                  descriptionStyle={[
+                    styles.itemDescription,
+                    { color: theme.colors.onSurfaceVariant ?? theme.colors.onSurface },
+                  ]}
                   left={(props) => <List.Icon {...props} color="#E78A1F" icon="star" />}
                 />
               )}
@@ -165,12 +169,9 @@ const styles = StyleSheet.create({
     bottom: 16,
   },
   itemTitle: {
-    color: '#2A2340',
     fontWeight: '500',
   },
-  itemDescription: {
-    color: '#4A4658',
-  },
+  itemDescription: {},
   emptyTitle: {
     textAlign: 'center',
     marginBottom: 8,

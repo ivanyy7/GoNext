@@ -5,12 +5,12 @@ import 'react-native-reanimated';
 import { PaperProvider } from 'react-native-paper';
 
 import { PaperDarkTheme, PaperLightTheme } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { ThemePreferenceProvider, useThemePreference } from '@/context/theme-preference';
 import { initDatabase } from '@/services/database';
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme() ?? 'light';
-  const theme = colorScheme === 'dark' ? PaperDarkTheme : PaperLightTheme;
+function RootLayoutInner() {
+  const { mode } = useThemePreference();
+  const theme = mode === 'dark' ? PaperDarkTheme : PaperLightTheme;
 
   useEffect(() => {
     initDatabase().catch((error) => {
@@ -38,6 +38,14 @@ export default function RootLayout() {
       </Stack>
       <StatusBar style="auto" />
     </PaperProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemePreferenceProvider>
+      <RootLayoutInner />
+    </ThemePreferenceProvider>
   );
 }
 
