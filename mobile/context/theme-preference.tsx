@@ -8,6 +8,8 @@ type ThemePreferenceContextValue = {
   setMode: (mode: ThemeMode) => void;
   darkAccentIndex: number;
   setDarkAccentIndex: (index: number) => void;
+  hintsEnabled: boolean;
+  setHintsEnabled: (value: boolean) => void;
 };
 
 // Набор безопасных акцентных цветов для тёмной темы.
@@ -39,6 +41,7 @@ export function ThemePreferenceProvider({ children }: ThemePreferenceProviderPro
 
   const [mode, setMode] = useState<ThemeMode>(initialMode);
   const [darkAccentIndex, setDarkAccentIndex] = useState(0);
+  const [hintsEnabled, setHintsEnabled] = useState(false);
 
   const value = useMemo(
     () => ({
@@ -46,8 +49,10 @@ export function ThemePreferenceProvider({ children }: ThemePreferenceProviderPro
       setMode,
       darkAccentIndex,
       setDarkAccentIndex,
+      hintsEnabled,
+      setHintsEnabled,
     }),
-    [mode, darkAccentIndex]
+    [mode, darkAccentIndex, hintsEnabled]
   );
 
   return (

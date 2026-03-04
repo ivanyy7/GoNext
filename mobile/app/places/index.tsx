@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, FAB, List, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,8 @@ import type { Place } from '@/models';
 import { getAllPlaces } from '@/services/database';
 import { ScreenBackground } from '@/components/ui/screen-background';
 import { MilkCard } from '@/components/ui/milk-card';
+import { HintBubble } from '@/components/ui/hint-bubble';
+import { useThemePreference } from '@/context/theme-preference';
 
 export default function PlacesListScreen() {
   const [places, setPlaces] = useState<Place[]>([]);
@@ -17,6 +19,8 @@ export default function PlacesListScreen() {
   const router = useRouter();
   const theme = useTheme();
   const { t } = useTranslation();
+  const { hintsEnabled } = useThemePreference();
+  const [showHint, setShowHint] = useState(false);
 
   const loadPlaces = async () => {
     try {
@@ -29,6 +33,10 @@ export default function PlacesListScreen() {
       setRefreshing(false);
     }
   };
+
+  useEffect(() => {
+    setShowHint(hintsEnabled);
+  }, [hintsEnabled]);
 
   useFocusEffect(
     useCallback(() => {
@@ -111,6 +119,14 @@ export default function PlacesListScreen() {
             icon="plus"
             color="#000000"
             onPress={handleAddPlace}
+          />
+          <HintBubble
+            visible={showHint}
+            text={t(
+              'hints.placesList',
+              'Здесь будут храниться все сохранённые места. Нажми на «+», чтобы добавить первое место.'
+            )}
+            onClose={() => setShowHint(false)}
           />
         </View>
       </ScreenBackground>

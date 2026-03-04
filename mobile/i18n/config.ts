@@ -108,12 +108,26 @@ const resources = {
         languageTitle: 'Язык интерфейса',
         languageRu: 'Русский',
         languageEn: 'English',
+        hintsTitle: 'Короткие подсказки',
+        hintsLabel: 'Включить короткие подсказки',
+        hintsDescription:
+          'Когда режим включён, на экранах будут появляться небольшие поясняющие карточки с подсказками.',
       },
       common: {
         loading: 'Загрузка...',
         errorTitle: 'Ошибка',
         ok: 'ОК',
         cancel: 'Отмена',
+      },
+      hints: {
+        home:
+          'Выбери один из режимов — Места, Поездки, Следующее место или Достопримечательности, чтобы начать заполнять дневник.',
+        placesList:
+          'Здесь будут храниться все сохранённые места. Нажми на «+», чтобы добавить первое место.',
+        tripsList:
+          'Здесь будут твои поездки. Нажми на «+», чтобы запланировать первую и добавить в неё места.',
+        highlightsList:
+          'Здесь можно сохранять яркие моменты и достопримечательности. Нажми на «+», чтобы добавить первую запись.',
       },
     },
   },
@@ -220,12 +234,26 @@ const resources = {
         languageTitle: 'Interface language',
         languageRu: 'Russian',
         languageEn: 'English',
+        hintsTitle: 'Short hints',
+        hintsLabel: 'Enable short hints',
+        hintsDescription:
+          'When this mode is on, small explanatory hint cards will appear on the screens.',
       },
       common: {
         loading: 'Loading...',
         errorTitle: 'Error',
         ok: 'OK',
         cancel: 'Cancel',
+      },
+      hints: {
+        home:
+          'Choose one of the modes — Places, Trips, Next place or Highlights — to start filling your diary.',
+        placesList:
+          'This is where all saved places will be stored. Tap "+" to add your first place.',
+        tripsList:
+          'This is where your trips live. Tap "+" to plan your first trip and add places into it.',
+        highlightsList:
+          'Here you can save memorable moments and highlights. Tap "+" to add your first highlight.',
       },
     },
   },

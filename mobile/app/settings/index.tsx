@@ -10,7 +10,8 @@ import { DarkAccentColors, useThemePreference } from '@/context/theme-preference
 import { changeAppLanguage } from '@/i18n/config';
 
 export default function SettingsScreen() {
-  const { mode, setMode, darkAccentIndex, setDarkAccentIndex } = useThemePreference();
+  const { mode, setMode, darkAccentIndex, setDarkAccentIndex, hintsEnabled, setHintsEnabled } =
+    useThemePreference();
   const isDark = mode === 'dark';
   const { t, i18n } = useTranslation();
 
@@ -102,6 +103,20 @@ export default function SettingsScreen() {
               </TouchableOpacity>
             </View>
           </MilkCard>
+
+          <MilkCard style={[styles.section, styles.hintsSection]}>
+            <Text style={styles.hintsTitle}>{t('settings.hintsTitle')}</Text>
+            <View style={styles.hintsRow}>
+              <Text style={styles.hintsLabel}>{t('settings.hintsLabel')}</Text>
+              <IconButton
+                icon={hintsEnabled ? 'lightbulb-on-outline' : 'lightbulb-outline'}
+                size={28}
+                iconColor={hintsEnabled ? '#FFB300' : '#555555'}
+                onPress={() => setHintsEnabled(!hintsEnabled)}
+              />
+            </View>
+            <Text style={styles.hintsDescription}>{t('settings.hintsDescription')}</Text>
+          </MilkCard>
         </ScrollView>
       </ScreenBackground>
     </>
@@ -180,6 +195,27 @@ const styles = StyleSheet.create({
   },
   languageChipTextActive: {
     color: '#FFFFFF',
+  },
+  hintsSection: {
+    gap: 4,
+  },
+  hintsTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2A2340',
+  },
+  hintsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  hintsLabel: {
+    fontSize: 14,
+    color: '#2A2340',
+  },
+  hintsDescription: {
+    fontSize: 12,
+    color: '#3E3A4F',
   },
 });
 

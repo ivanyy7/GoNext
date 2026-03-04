@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Chip, FAB, List, Text, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,8 @@ import type { Highlight, Trip } from '@/models';
 import { getActiveTrip, getAllHighlights, getHighlightsByTrip } from '@/services/database';
 import { ScreenBackground } from '@/components/ui/screen-background';
 import { MilkCard } from '@/components/ui/milk-card';
+import { HintBubble } from '@/components/ui/hint-bubble';
+import { useThemePreference } from '@/context/theme-preference';
 
 type FilterMode = 'all' | 'current';
 
@@ -21,6 +23,8 @@ export default function HighlightsListScreen() {
   const theme = useTheme();
   const router = useRouter();
   const { t } = useTranslation();
+  const { hintsEnabled } = useThemePreference();
+  const [showHint, setShowHint] = useState(false);
 
   const loadData = async (filterMode: FilterMode) => {
     try {
@@ -57,6 +61,10 @@ export default function HighlightsListScreen() {
   const handleAddHighlight = () => {
     router.push('/highlights/new');
   };
+
+  useEffect(() => {
+    setShowHint(hintsEnabled);
+  }, [hintsEnabled]);
 
   const handleOpenHighlight = (id: number) => {
     router.push({ pathname: '/highlights/[id]', params: { id: String(id) } });
@@ -136,6 +144,14 @@ export default function HighlightsListScreen() {
             icon="plus"
             color="#000000"
             onPress={handleAddHighlight}
+          />
+          <HintBubble
+            visible={showHint}
+            text={t(
+              'hints.highlightsList',
+              'Здесь можно сохранять яркие моменты и достопримечательности. Нажми на «+», чтобы добавить первую запись.'
+            )}
+            onClose={() => setShowHint(false)}
           />
         </View>
       </ScreenBackground>

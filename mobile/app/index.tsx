@@ -7,10 +7,18 @@ import { useRouter } from 'expo-router';
 import { AppHeader } from '@/components/ui/app-header';
 import { PrimaryButton } from '@/components/ui/primary-button';
 import { ScreenBackground } from '@/components/ui/screen-background';
+import { HintBubble } from '@/components/ui/hint-bubble';
+import { useThemePreference } from '@/context/theme-preference';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { hintsEnabled } = useThemePreference();
+  const [showHint, setShowHint] = React.useState(false);
+
+  React.useEffect(() => {
+    setShowHint(hintsEnabled);
+  }, [hintsEnabled]);
 
   const handleOpenPlaces = () => {
     router.push('/places');
@@ -55,6 +63,14 @@ export default function HomeScreen() {
               {t('home.settings')}
             </PrimaryButton>
           </View>
+          <HintBubble
+            visible={showHint}
+            text={t(
+              'hints.home',
+              'Выбери один из режимов — Места, Поездки, Следующее место или Достопримечательности, чтобы начать заполнять дневник.'
+            )}
+            onClose={() => setShowHint(false)}
+          />
         </View>
       </ScreenBackground>
     </>
