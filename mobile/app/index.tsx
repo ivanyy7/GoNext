@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
 import { PrimaryButton } from '@/components/ui/primary-button';
+import { ScreenBackground } from '@/components/ui/screen-background';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -33,19 +34,21 @@ export default function HomeScreen() {
     <>
       <AppHeader title="GoNext" />
 
-      <View style={styles.container}>
-        <Text variant="headlineSmall" style={styles.text}>
-          Приветствую, Иван!
-        </Text>
+      <ScreenBackground>
+        <View style={styles.container}>
+          <Text variant="headlineSmall" style={styles.text}>
+            Приветствую, Иван!
+          </Text>
 
-        <View style={styles.buttons}>
-          <PrimaryButton onPress={handleOpenPlaces}>Места</PrimaryButton>
-          <PrimaryButton onPress={handleOpenTrips}>Поездки</PrimaryButton>
-          <PrimaryButton onPress={handleOpenNextPlace}>Следующее место</PrimaryButton>
-          <PrimaryButton onPress={handleOpenHighlights}>Достопримечательности</PrimaryButton>
-          <PrimaryButton onPress={handleOpenSettings}>Настройки</PrimaryButton>
+          <View style={styles.buttons}>
+            <PrimaryButton onPress={handleOpenPlaces}>Места</PrimaryButton>
+            <PrimaryButton onPress={handleOpenTrips}>Поездки</PrimaryButton>
+            <PrimaryButton onPress={handleOpenNextPlace}>Следующее место</PrimaryButton>
+            <PrimaryButton onPress={handleOpenHighlights}>Достопримечательности</PrimaryButton>
+            <PrimaryButton onPress={handleOpenSettings}>Настройки</PrimaryButton>
+          </View>
         </View>
-      </View>
+      </ScreenBackground>
     </>
   );
 }

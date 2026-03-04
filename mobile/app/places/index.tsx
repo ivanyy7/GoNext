@@ -6,6 +6,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { AppHeader } from '@/components/ui/app-header';
 import type { Place } from '@/models';
 import { getAllPlaces } from '@/services/database';
+import { ScreenBackground } from '@/components/ui/screen-background';
 
 export default function PlacesListScreen() {
   const [places, setPlaces] = useState<Place[]>([]);
@@ -49,42 +50,46 @@ export default function PlacesListScreen() {
     <>
       <AppHeader title="Места" />
 
-      <View style={styles.container}>
-        {loading ? (
-          <View style={styles.center}>
-            <ActivityIndicator />
-          </View>
-        ) : places.length === 0 ? (
-          <View style={styles.center}>
-            <Text variant="bodyMedium" style={styles.emptyText}>
-              Пока нет ни одного места. Нажми на кнопку «+», чтобы добавить первое.
-            </Text>
-          </View>
-        ) : (
-          <FlatList
-            data={places}
-            keyExtractor={(item) => String(item.id)}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-            }
-            renderItem={({ item }) => (
-              <List.Item
-                title={item.name}
-                description={item.description ?? undefined}
-                onPress={() => handleOpenPlace(item.id)}
-                left={(props) => (
-                  <List.Icon
-                    {...props}
-                    icon={item.liked ? 'star' : item.visitLater ? 'clock-outline' : 'map-marker'}
-                  />
-                )}
-              />
-            )}
-          />
-        )}
+      <ScreenBackground>
+        <View style={styles.container}>
+          {loading ? (
+            <View style={styles.center}>
+              <ActivityIndicator />
+            </View>
+          ) : places.length === 0 ? (
+            <View style={styles.center}>
+              <Text variant="bodyMedium" style={styles.emptyText}>
+                Пока нет ни одного места. Нажми на кнопку «+», чтобы добавить первое.
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={places}
+              keyExtractor={(item) => String(item.id)}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+              }
+              renderItem={({ item }) => (
+                <List.Item
+                  title={item.name}
+                  description={item.description ?? undefined}
+                  onPress={() => handleOpenPlace(item.id)}
+                  left={(props) => (
+                    <List.Icon
+                      {...props}
+                      icon={
+                        item.liked ? 'star' : item.visitLater ? 'clock-outline' : 'map-marker'
+                      }
+                    />
+                  )}
+                />
+              )}
+            />
+          )}
 
-        <FAB style={styles.fab} icon="plus" onPress={handleAddPlace} />
-      </View>
+          <FAB style={styles.fab} icon="plus" onPress={handleAddPlace} />
+        </View>
+      </ScreenBackground>
     </>
   );
 }

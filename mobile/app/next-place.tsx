@@ -6,6 +6,7 @@ import { AppHeader } from '@/components/ui/app-header';
 import type { Place, Trip, TripPlace } from '@/models';
 import { getActiveTrip, getPlaceById, getTripPlaces, updateTripPlace } from '@/services/database';
 import { PrimaryButton } from '@/components/ui/primary-button';
+import { ScreenBackground } from '@/components/ui/screen-background';
 
 type NextPlaceState =
   | { status: 'loading' }
@@ -103,62 +104,64 @@ export default function NextPlaceScreen() {
     <>
       <AppHeader title="Следующее место" />
 
-      <ScrollView contentContainerStyle={styles.content}>
-        {state.status === 'loading' && (
-          <View style={styles.center}>
-            <ActivityIndicator />
-            <Text style={styles.message}>Определяем следующую точку маршрута…</Text>
-          </View>
-        )}
+      <ScreenBackground>
+        <ScrollView contentContainerStyle={styles.content}>
+          {state.status === 'loading' && (
+            <View style={styles.center}>
+              <ActivityIndicator />
+              <Text style={styles.message}>Определяем следующую точку маршрута…</Text>
+            </View>
+          )}
 
-        {state.status === 'no-trips' && (
-          <View style={styles.center}>
-            <Text style={styles.message}>
-              Пока нет ни одной поездки. Создай поездку, чтобы увидеть следующее место.
-            </Text>
-          </View>
-        )}
+          {state.status === 'no-trips' && (
+            <View style={styles.center}>
+              <Text style={styles.message}>
+                Пока нет ни одной поездки. Создай поездку, чтобы увидеть следующее место.
+              </Text>
+            </View>
+          )}
 
-        {state.status === 'no-next-place' && (
-          <View style={styles.center}>
-            <Text style={styles.message}>
-              В текущей поездке «{state.trip.title}» больше нет непосещённых мест.
-            </Text>
-          </View>
-        )}
+          {state.status === 'no-next-place' && (
+            <View style={styles.center}>
+              <Text style={styles.message}>
+                В текущей поездке «{state.trip.title}» больше нет непосещённых мест.
+              </Text>
+            </View>
+          )}
 
-        {state.status === 'ready' && (
-          <>
-            <Card>
-              <Card.Title title={state.place.name} subtitle={state.trip.title} />
-              <Card.Content>
-                {state.place.description ? (
-                  <Text style={styles.description}>{state.place.description}</Text>
-                ) : (
-                  <Text style={styles.description}>Описание не задано.</Text>
-                )}
+          {state.status === 'ready' && (
+            <>
+              <Card>
+                <Card.Title title={state.place.name} subtitle={state.trip.title} />
+                <Card.Content>
+                  {state.place.description ? (
+                    <Text style={styles.description}>{state.place.description}</Text>
+                  ) : (
+                    <Text style={styles.description}>Описание не задано.</Text>
+                  )}
 
-                <Text style={styles.coords}>
-                  Координаты:{' '}
-                  {state.place.latitude != null && state.place.longitude != null
-                    ? `${state.place.latitude}, ${state.place.longitude}`
-                    : 'не заданы'}
-                </Text>
-              </Card.Content>
-            </Card>
+                  <Text style={styles.coords}>
+                    Координаты:{' '}
+                    {state.place.latitude != null && state.place.longitude != null
+                      ? `${state.place.latitude}, ${state.place.longitude}`
+                      : 'не заданы'}
+                  </Text>
+                </Card.Content>
+              </Card>
 
-            <PrimaryButton onPress={handleOpenInMaps}>Открыть в навигаторе</PrimaryButton>
+              <PrimaryButton onPress={handleOpenInMaps}>Открыть в навигаторе</PrimaryButton>
 
-            <PrimaryButton
-              onPress={handleMarkVisited}
-              loading={updating}
-              disabled={updating}
-            >
-              Отметить как посещённое и перейти к следующему
-            </PrimaryButton>
-          </>
-        )}
-      </ScrollView>
+              <PrimaryButton
+                onPress={handleMarkVisited}
+                loading={updating}
+                disabled={updating}
+              >
+                Отметить как посещённое и перейти к следующему
+              </PrimaryButton>
+            </>
+          )}
+        </ScrollView>
+      </ScreenBackground>
     </>
   );
 }

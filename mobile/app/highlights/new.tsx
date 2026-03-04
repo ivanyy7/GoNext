@@ -8,6 +8,7 @@ import { AppHeader } from '@/components/ui/app-header';
 import { PrimaryButton } from '@/components/ui/primary-button';
 import type { Highlight, Trip } from '@/models';
 import { createHighlight, getActiveTrip } from '@/services/database';
+import { ScreenBackground } from '@/components/ui/screen-background';
 
 export default function NewHighlightScreen() {
   const router = useRouter();
@@ -81,57 +82,59 @@ export default function NewHighlightScreen() {
     <>
       <AppHeader title="Новая достопримечательность" />
 
-      <ScrollView contentContainerStyle={styles.content}>
-        {activeTrip ? (
-          <Text style={styles.tripInfo}>Текущая поездка: {activeTrip.title}</Text>
-        ) : (
-          <Text style={styles.tripInfo}>Текущая поездка не выбрана.</Text>
-        )}
+      <ScreenBackground>
+        <ScrollView contentContainerStyle={styles.content}>
+          {activeTrip ? (
+            <Text style={styles.tripInfo}>Текущая поездка: {activeTrip.title}</Text>
+          ) : (
+            <Text style={styles.tripInfo}>Текущая поездка не выбрана.</Text>
+          )}
 
-        <TextInput
-          label="Название"
-          value={title}
-          onChangeText={setTitle}
-          mode="outlined"
-          style={styles.input}
-        />
+          <TextInput
+            label="Название"
+            value={title}
+            onChangeText={setTitle}
+            mode="outlined"
+            style={styles.input}
+          />
 
-        <TextInput
-          label="Описание / заметка"
-          value={description}
-          onChangeText={setDescription}
-          mode="outlined"
-          style={styles.input}
-          multiline
-        />
+          <TextInput
+            label="Описание / заметка"
+            value={description}
+            onChangeText={setDescription}
+            mode="outlined"
+            style={styles.input}
+            multiline
+          />
 
-        <TextInput
-          label="Дата и время (ISO, можно отредактировать)"
-          value={date}
-          onChangeText={setDate}
-          mode="outlined"
-          style={styles.input}
-        />
+          <TextInput
+            label="Дата и время (ISO, можно отредактировать)"
+            value={date}
+            onChangeText={setDate}
+            mode="outlined"
+            style={styles.input}
+          />
 
-        <View style={styles.photosBlock}>
-          <View style={styles.photosHeader}>
-            <Text variant="titleSmall">Фотографии</Text>
-            <PrimaryButton compact onPress={handleAddPhoto}>
-              Добавить фото
-            </PrimaryButton>
+          <View style={styles.photosBlock}>
+            <View style={styles.photosHeader}>
+              <Text variant="titleSmall">Фотографии</Text>
+              <PrimaryButton compact onPress={handleAddPhoto}>
+                Добавить фото
+              </PrimaryButton>
+            </View>
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {photos.map((uri) => (
+                <Image key={uri} source={{ uri }} style={styles.photo} />
+              ))}
+            </ScrollView>
           </View>
 
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {photos.map((uri) => (
-              <Image key={uri} source={{ uri }} style={styles.photo} />
-            ))}
-          </ScrollView>
-        </View>
-
-        <PrimaryButton onPress={handleSave} loading={saving} disabled={saving}>
-          Сохранить запись
-        </PrimaryButton>
-      </ScrollView>
+          <PrimaryButton onPress={handleSave} loading={saving} disabled={saving}>
+            Сохранить запись
+          </PrimaryButton>
+        </ScrollView>
+      </ScreenBackground>
     </>
   );
 }

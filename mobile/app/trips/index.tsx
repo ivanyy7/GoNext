@@ -6,6 +6,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { AppHeader } from '@/components/ui/app-header';
 import type { Trip } from '@/models';
 import { getAllTrips } from '@/services/database';
+import { ScreenBackground } from '@/components/ui/screen-background';
 
 export default function TripsListScreen() {
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -58,42 +59,44 @@ export default function TripsListScreen() {
     <>
       <AppHeader title="Поездки" />
 
-      <View style={styles.container}>
-        {loading ? (
-          <View style={styles.center}>
-            <ActivityIndicator />
-          </View>
-        ) : trips.length === 0 ? (
-          <View style={styles.center}>
-            <Text variant="bodyMedium" style={styles.emptyText}>
-              Пока нет ни одной поездки. Нажми на кнопку «+», чтобы создать первую.
-            </Text>
-          </View>
-        ) : (
-          <FlatList
-            data={trips}
-            keyExtractor={(item) => String(item.id)}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-            }
-            renderItem={({ item }) => (
-              <List.Item
-                title={item.title}
-                description={formatDates(item)}
-                onPress={() => handleOpenTrip(item.id)}
-                left={(props) => (
-                  <List.Icon
-                    {...props}
-                    icon={item.current ? 'airplane-takeoff' : 'calendar-range'}
-                  />
-                )}
-              />
-            )}
-          />
-        )}
+      <ScreenBackground>
+        <View style={styles.container}>
+          {loading ? (
+            <View style={styles.center}>
+              <ActivityIndicator />
+            </View>
+          ) : trips.length === 0 ? (
+            <View style={styles.center}>
+              <Text variant="bodyMedium" style={styles.emptyText}>
+                Пока нет ни одной поездки. Нажми на кнопку «+», чтобы создать первую.
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={trips}
+              keyExtractor={(item) => String(item.id)}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+              }
+              renderItem={({ item }) => (
+                <List.Item
+                  title={item.title}
+                  description={formatDates(item)}
+                  onPress={() => handleOpenTrip(item.id)}
+                  left={(props) => (
+                    <List.Icon
+                      {...props}
+                      icon={item.current ? 'airplane-takeoff' : 'calendar-range'}
+                    />
+                  )}
+                />
+              )}
+            />
+          )}
 
-        <FAB style={styles.fab} icon="plus" onPress={handleAddTrip} />
-      </View>
+          <FAB style={styles.fab} icon="plus" onPress={handleAddTrip} />
+        </View>
+      </ScreenBackground>
     </>
   );
 }

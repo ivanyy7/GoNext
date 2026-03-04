@@ -12,6 +12,7 @@ import {
   getPlaceById,
   getTripById,
 } from '@/services/database';
+import { ScreenBackground } from '@/components/ui/screen-background';
 
 export default function HighlightDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -81,9 +82,11 @@ export default function HighlightDetailsScreen() {
     return (
       <>
         <AppHeader title="Достопримечательность" />
-        <View style={styles.center}>
-          <Text>Загрузка…</Text>
-        </View>
+        <ScreenBackground>
+          <View style={styles.center}>
+            <Text>Загрузка…</Text>
+          </View>
+        </ScreenBackground>
       </>
     );
   }
@@ -96,34 +99,36 @@ export default function HighlightDetailsScreen() {
     <>
       <AppHeader title="Достопримечательность" />
 
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text variant="titleLarge" style={styles.title}>
-          {highlight.title}
-        </Text>
+      <ScreenBackground>
+        <ScrollView contentContainerStyle={styles.content}>
+          <Text variant="titleLarge" style={styles.title}>
+            {highlight.title}
+          </Text>
 
-        {highlight.date && (
-          <Text style={styles.meta}>Дата/время: {highlight.date}</Text>
-        )}
+          {highlight.date && (
+            <Text style={styles.meta}>Дата/время: {highlight.date}</Text>
+          )}
 
-        {trip && <Text style={styles.meta}>Поездка: {trip.title}</Text>}
-        {place && <Text style={styles.meta}>Место: {place.name}</Text>}
+          {trip && <Text style={styles.meta}>Поездка: {trip.title}</Text>}
+          {place && <Text style={styles.meta}>Место: {place.name}</Text>}
 
-        <Text style={styles.description}>
-          {highlight.description || 'Без описания. Заметка не заполнена.'}
-        </Text>
+          <Text style={styles.description}>
+            {highlight.description || 'Без описания. Заметка не заполнена.'}
+          </Text>
 
-        {highlight.photos.length > 0 && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {highlight.photos.map((uri) => (
-              <Image key={uri} source={{ uri }} style={styles.photo} />
-            ))}
-          </ScrollView>
-        )}
+          {highlight.photos.length > 0 && (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {highlight.photos.map((uri) => (
+                <Image key={uri} source={{ uri }} style={styles.photo} />
+              ))}
+            </ScrollView>
+          )}
 
-        <PrimaryButton onPress={handleDelete} mode="outlined">
-          Удалить запись
-        </PrimaryButton>
-      </ScrollView>
+          <PrimaryButton onPress={handleDelete} mode="outlined">
+            Удалить запись
+          </PrimaryButton>
+        </ScrollView>
+      </ScreenBackground>
     </>
   );
 }

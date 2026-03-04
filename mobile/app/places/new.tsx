@@ -8,6 +8,7 @@ import { AppHeader } from '@/components/ui/app-header';
 import { PrimaryButton } from '@/components/ui/primary-button';
 import type { Place } from '@/models';
 import { createPlace } from '@/services/database';
+import { ScreenBackground } from '@/components/ui/screen-background';
 
 export default function NewPlaceScreen() {
   const router = useRouter();
@@ -88,72 +89,74 @@ export default function NewPlaceScreen() {
     <>
       <AppHeader title="Новое место" />
 
-      <ScrollView contentContainerStyle={styles.content}>
-        <TextInput
-          label="Название"
-          value={name}
-          onChangeText={setName}
-          mode="outlined"
-          style={styles.input}
-        />
-
-        <TextInput
-          label="Описание"
-          value={description}
-          onChangeText={setDescription}
-          mode="outlined"
-          style={styles.input}
-          multiline
-        />
-
-        <View style={styles.row}>
-          <Text>Посетить позже</Text>
-          <Switch value={visitLater} onValueChange={setVisitLater} />
-        </View>
-
-        <View style={styles.row}>
-          <Text>Понравилось</Text>
-          <Switch value={liked} onValueChange={setLiked} />
-        </View>
-
-        <View style={styles.row}>
+      <ScreenBackground>
+        <ScrollView contentContainerStyle={styles.content}>
           <TextInput
-            label="Широта (lat)"
-            value={latitude}
-            onChangeText={setLatitude}
+            label="Название"
+            value={name}
+            onChangeText={setName}
             mode="outlined"
-            style={[styles.input, styles.coordInput]}
-            keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
+            style={styles.input}
           />
-          <TextInput
-            label="Долгота (lon)"
-            value={longitude}
-            onChangeText={setLongitude}
-            mode="outlined"
-            style={[styles.input, styles.coordInput]}
-            keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
-          />
-        </View>
 
-        <View style={styles.photosBlock}>
-          <View style={styles.photosHeader}>
-            <Text variant="titleSmall">Фотографии</Text>
-            <PrimaryButton compact onPress={handleAddPhoto}>
-              Добавить фото
-            </PrimaryButton>
+          <TextInput
+            label="Описание"
+            value={description}
+            onChangeText={setDescription}
+            mode="outlined"
+            style={styles.input}
+            multiline
+          />
+
+          <View style={styles.row}>
+            <Text>Посетить позже</Text>
+            <Switch value={visitLater} onValueChange={setVisitLater} />
           </View>
 
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {photos.map((uri) => (
-              <Image key={uri} source={{ uri }} style={styles.photo} />
-            ))}
-          </ScrollView>
-        </View>
+          <View style={styles.row}>
+            <Text>Понравилось</Text>
+            <Switch value={liked} onValueChange={setLiked} />
+          </View>
 
-        <PrimaryButton onPress={handleSave} loading={saving} disabled={saving}>
-          Сохранить
-        </PrimaryButton>
-      </ScrollView>
+          <View style={styles.row}>
+            <TextInput
+              label="Широта (lat)"
+              value={latitude}
+              onChangeText={setLatitude}
+              mode="outlined"
+              style={[styles.input, styles.coordInput]}
+              keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
+            />
+            <TextInput
+              label="Долгота (lon)"
+              value={longitude}
+              onChangeText={setLongitude}
+              mode="outlined"
+              style={[styles.input, styles.coordInput]}
+              keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
+            />
+          </View>
+
+          <View style={styles.photosBlock}>
+            <View style={styles.photosHeader}>
+              <Text variant="titleSmall">Фотографии</Text>
+              <PrimaryButton compact onPress={handleAddPhoto}>
+                Добавить фото
+              </PrimaryButton>
+            </View>
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {photos.map((uri) => (
+                <Image key={uri} source={{ uri }} style={styles.photo} />
+              ))}
+            </ScrollView>
+          </View>
+
+          <PrimaryButton onPress={handleSave} loading={saving} disabled={saving}>
+            Сохранить
+          </PrimaryButton>
+        </ScrollView>
+      </ScreenBackground>
     </>
   );
 }

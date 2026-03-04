@@ -6,6 +6,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { AppHeader } from '@/components/ui/app-header';
 import type { Highlight, Trip } from '@/models';
 import { getActiveTrip, getAllHighlights, getHighlightsByTrip } from '@/services/database';
+import { ScreenBackground } from '@/components/ui/screen-background';
 
 type FilterMode = 'all' | 'current';
 
@@ -66,51 +67,53 @@ export default function HighlightsListScreen() {
     <>
       <AppHeader title="Достопримечательности" />
 
-      <View style={styles.container}>
-        <View style={styles.chipsRow}>
-          <Chip
-            selected={mode === 'current'}
-            onPress={() => setMode('current')}
-            disabled={!activeTrip}
-          >
-            {activeTrip ? `Текущая поездка: ${activeTrip.title}` : 'Нет текущей поездки'}
-          </Chip>
-          <Chip selected={mode === 'all'} onPress={() => setMode('all')}>
-            Все
-          </Chip>
+      <ScreenBackground>
+        <View style={styles.container}>
+          <View style={styles.chipsRow}>
+            <Chip
+              selected={mode === 'current'}
+              onPress={() => setMode('current')}
+              disabled={!activeTrip}
+            >
+              {activeTrip ? `Текущая поездка: ${activeTrip.title}` : 'Нет текущей поездки'}
+            </Chip>
+            <Chip selected={mode === 'all'} onPress={() => setMode('all')}>
+              Все
+            </Chip>
+          </View>
+
+          {loading ? (
+            <View style={styles.center}>
+              <ActivityIndicator />
+            </View>
+          ) : highlights.length === 0 ? (
+            <View style={styles.center}>
+              <Text variant="bodyMedium" style={styles.emptyText}>
+                Пока нет ни одной записи о достопримечательностях. Нажми «+», чтобы создать
+                первую.
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={highlights}
+              keyExtractor={(item) => String(item.id)}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+              }
+              renderItem={({ item }) => (
+                <List.Item
+                  title={item.title}
+                  description={formatDate(item)}
+                  onPress={() => handleOpenHighlight(item.id)}
+                  left={(props) => <List.Icon {...props} icon="star" />}
+                />
+              )}
+            />
+          )}
+
+          <FAB style={styles.fab} icon="plus" onPress={handleAddHighlight} />
         </View>
-
-        {loading ? (
-          <View style={styles.center}>
-            <ActivityIndicator />
-          </View>
-        ) : highlights.length === 0 ? (
-          <View style={styles.center}>
-            <Text variant="bodyMedium" style={styles.emptyText}>
-              Пока нет ни одной записи о достопримечательностях. Нажми «+», чтобы создать
-              первую.
-            </Text>
-          </View>
-        ) : (
-          <FlatList
-            data={highlights}
-            keyExtractor={(item) => String(item.id)}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-            }
-            renderItem={({ item }) => (
-              <List.Item
-                title={item.title}
-                description={formatDate(item)}
-                onPress={() => handleOpenHighlight(item.id)}
-                left={(props) => <List.Icon {...props} icon="star" />}
-              />
-            )}
-          />
-        )}
-
-        <FAB style={styles.fab} icon="plus" onPress={handleAddHighlight} />
-      </View>
+      </ScreenBackground>
     </>
   );
 }
