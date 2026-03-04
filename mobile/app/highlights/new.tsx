@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Image, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Text, TextInput } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -14,6 +15,7 @@ import { saveHighlightPhoto, resolvePhotoUri } from '@/services/photo-storage';
 
 export default function NewHighlightScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [activeTrip, setActiveTrip] = useState<Trip | null>(null);
   const [title, setTitle] = useState('');
@@ -32,7 +34,7 @@ export default function NewHighlightScreen() {
 
   const handleSave = async () => {
     if (!title.trim()) {
-      Alert.alert('Ошибка', 'Название обязательно.');
+      Alert.alert(t('highlights.errorTitleRequired'), t('highlights.errorNameRequired'));
       return;
     }
 
@@ -66,7 +68,10 @@ export default function NewHighlightScreen() {
       router.back();
     } catch (error) {
       console.error('Не удалось сохранить запись о достопримечательности', error);
-      Alert.alert('Ошибка', 'Не удалось сохранить запись. Проверь логи консоли.');
+      Alert.alert(
+        t('common.errorTitle'),
+        t('highlights.errorSave', 'Не удалось сохранить запись. Проверь логи консоли.')
+      );
     } finally {
       setSaving(false);
     }
@@ -75,7 +80,10 @@ export default function NewHighlightScreen() {
   const requestMediaPermission = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Нет доступа', 'Нужен доступ к фото, чтобы прикреплять изображения.');
+      Alert.alert(
+        t('common.errorTitle'),
+        t('highlights.noPhotoPermission', 'Нужен доступ к фото, чтобы прикреплять изображения.')
+      );
       return false;
     }
     return true;
@@ -97,20 +105,22 @@ export default function NewHighlightScreen() {
 
   return (
     <>
-      <AppHeader title="Новая достопримечательность" />
+      <AppHeader title={t('highlights.newTitle')} />
 
       <ScreenBackground>
         <ScrollView contentContainerStyle={styles.content}>
           {activeTrip ? (
-            <Text style={styles.tripInfo}>Текущая поездка: {activeTrip.title}</Text>
+            <Text style={styles.tripInfo}>
+              {t('highlights.tripInfoWithTrip', { title: activeTrip.title })}
+            </Text>
           ) : (
-            <Text style={styles.tripInfo}>Текущая поездка не выбрана.</Text>
+            <Text style={styles.tripInfo}>{t('highlights.tripInfoNoTrip')}</Text>
           )}
 
-          <FormTextInput label="Название" value={title} onChangeText={setTitle} />
+          <FormTextInput label={t('highlights.fieldTitle')} value={title} onChangeText={setTitle} />
 
           <FormTextInput
-            label="Описание / заметка"
+            label={t('highlights.fieldDescription')}
             value={description}
             onChangeText={setDescription}
             style={styles.input}
@@ -118,7 +128,7 @@ export default function NewHighlightScreen() {
           />
 
           <FormTextInput
-            label="Дата и время (ISO, можно отредактировать)"
+            label={t('highlights.fieldDate')}
             value={date}
             onChangeText={setDate}
             style={styles.input}
@@ -126,9 +136,9 @@ export default function NewHighlightScreen() {
 
           <View style={styles.photosBlock}>
             <View style={styles.photosHeader}>
-              <Text variant="titleSmall">Фотографии</Text>
+              <Text variant="titleSmall">{t('highlights.photos')}</Text>
               <PrimaryButton compact onPress={handleAddPhoto}>
-                Добавить фото
+                {t('highlights.addPhoto')}
               </PrimaryButton>
             </View>
 
@@ -140,7 +150,7 @@ export default function NewHighlightScreen() {
           </View>
 
           <PrimaryButton onPress={handleSave} loading={saving} disabled={saving}>
-            Сохранить запись
+            {t('highlights.saveHighlight')}
           </PrimaryButton>
         </ScrollView>
       </ScreenBackground>

@@ -7,6 +7,7 @@ import { AppHeader } from '@/components/ui/app-header';
 import { ScreenBackground } from '@/components/ui/screen-background';
 import { MilkCard } from '@/components/ui/milk-card';
 import { DarkAccentColors, useThemePreference } from '@/context/theme-preference';
+import { changeAppLanguage } from '@/i18n/config';
 
 export default function SettingsScreen() {
   const { mode, setMode, darkAccentIndex, setDarkAccentIndex } = useThemePreference();
@@ -71,7 +72,7 @@ export default function SettingsScreen() {
                   styles.languageChip,
                   i18n.language === 'ru' && styles.languageChipActive,
                 ]}
-                onPress={() => i18n.changeLanguage('ru')}
+                onPress={() => changeAppLanguage('ru')}
               >
                 <Text
                   style={[
@@ -88,7 +89,7 @@ export default function SettingsScreen() {
                   styles.languageChip,
                   i18n.language === 'en' && styles.languageChipActive,
                 ]}
-                onPress={() => i18n.changeLanguage('en')}
+                onPress={() => changeAppLanguage('en')}
               >
                 <Text
                   style={[

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, FAB, List, Text, useTheme } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import { useFocusEffect, useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -15,6 +16,7 @@ export default function TripsListScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const loadTrips = async () => {
     try {
@@ -59,7 +61,7 @@ export default function TripsListScreen() {
 
   return (
     <>
-      <AppHeader title="Поездки" />
+      <AppHeader title={t('trips.titleList')} />
 
       <ScreenBackground>
         <View style={styles.container}>
@@ -71,10 +73,10 @@ export default function TripsListScreen() {
             <View style={styles.center}>
               <MilkCard>
                 <Text variant="titleMedium" style={styles.emptyTitle}>
-                  Пока нет ни одной поездки
+                  {t('trips.emptyTitle')}
                 </Text>
                 <Text variant="bodyMedium" style={styles.emptyText}>
-                  Нажми на «+», чтобы спланировать своё первое путешествие.
+                  {t('trips.emptyText')}
                 </Text>
               </MilkCard>
             </View>

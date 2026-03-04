@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Chip, FAB, List, Text, useTheme } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import { useFocusEffect, useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -19,6 +20,7 @@ export default function HighlightsListScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const loadData = async (filterMode: FilterMode) => {
     try {
@@ -67,7 +69,7 @@ export default function HighlightsListScreen() {
 
   return (
     <>
-      <AppHeader title="Достопримечательности" />
+      <AppHeader title={t('highlights.titleList')} />
 
       <ScreenBackground>
         <View style={styles.container}>
@@ -78,14 +80,16 @@ export default function HighlightsListScreen() {
               disabled={!activeTrip}
             textStyle={styles.chipText}
             >
-              {activeTrip ? `Текущая поездка: ${activeTrip.title}` : 'Нет текущей поездки'}
+              {activeTrip
+                ? t('highlights.filterCurrentTripPrefix', { title: activeTrip.title })
+                : t('highlights.filterNoCurrentTrip')}
             </Chip>
           <Chip
             selected={mode === 'all'}
             onPress={() => setMode('all')}
             textStyle={styles.chipTextAll}
           >
-              Все
+              {t('highlights.filterAll')}
             </Chip>
           </View>
 
@@ -97,10 +101,10 @@ export default function HighlightsListScreen() {
           <View style={styles.center}>
             <MilkCard>
               <Text variant="titleMedium" style={styles.emptyTitle}>
-                Пока нет ни одной записи
+                {t('highlights.emptyTitle')}
               </Text>
               <Text variant="bodyMedium" style={styles.emptyText}>
-                Нажми на «+», чтобы сохранить первую яркую достопримечательность или момент.
+                {t('highlights.emptyText')}
               </Text>
             </MilkCard>
           </View>

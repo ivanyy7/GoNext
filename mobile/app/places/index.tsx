@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, FAB, List, Text, useTheme } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import { useFocusEffect, useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -15,6 +16,7 @@ export default function PlacesListScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const loadPlaces = async () => {
     try {
@@ -50,7 +52,7 @@ export default function PlacesListScreen() {
 
   return (
     <>
-      <AppHeader title="Места" />
+      <AppHeader title={t('places.titleList')} />
 
       <ScreenBackground>
         <View style={styles.container}>
@@ -62,10 +64,10 @@ export default function PlacesListScreen() {
             <View style={styles.center}>
               <MilkCard>
                 <Text variant="titleMedium" style={styles.emptyTitle}>
-                  Пока нет ни одного места
+                  {t('places.emptyTitle')}
                 </Text>
                 <Text variant="bodyMedium" style={styles.emptyText}>
-                  Нажми на кнопку «+», чтобы добавить первое место в свой дневник.
+                  {t('places.emptyText')}
                 </Text>
               </MilkCard>
             </View>

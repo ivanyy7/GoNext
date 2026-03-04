@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Image, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -19,6 +20,7 @@ export default function HighlightDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const highlightId = Number(id);
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [highlight, setHighlight] = useState<Highlight | null>(null);
   const [trip, setTrip] = useState<Trip | null>(null);
@@ -30,7 +32,10 @@ export default function HighlightDetailsScreen() {
       try {
         const h = await getHighlightById(highlightId);
         if (!h) {
-          Alert.alert('Ошибка', 'Запись не найдена.');
+          Alert.alert(
+            t('common.errorTitle'),
+            t('highlights.errorNotFound', 'Запись не найдена.')
+          );
           router.back();
           return;
         }
@@ -46,7 +51,10 @@ export default function HighlightDetailsScreen() {
         }
       } catch (error) {
         console.error('Не удалось загрузить запись о достопримечательности', error);
-        Alert.alert('Ошибка', 'Не удалось загрузить данные.');
+        Alert.alert(
+          t('common.errorTitle'),
+          t('highlights.errorLoadDetails', 'Не удалось загрузить данные.')
+        );
         router.back();
       } finally {
         setLoading(false);
@@ -61,10 +69,10 @@ export default function HighlightDetailsScreen() {
   const handleDelete = () => {
     if (!highlight) return;
 
-    Alert.alert('Удалить запись', 'Точно удалить эту запись?', [
-      { text: 'Отмена', style: 'cancel' },
+    Alert.alert(t('highlights.deleteTitle'), t('highlights.deleteConfirm'), [
+      { text: t('common.cancel'), style: 'cancel' },
       {
-        text: 'Удалить',
+        text: t('highlights.deleteConfirmButton', 'Удалить'),
         style: 'destructive',
         onPress: async () => {
           try {
@@ -78,7 +86,10 @@ export default function HighlightDetailsScreen() {
             router.back();
           } catch (error) {
             console.error('Не удалось удалить запись', error);
-            Alert.alert('Ошибка', 'Не удалось удалить запись.');
+            Alert.alert(
+              t('common.errorTitle'),
+              t('highlights.errorDelete', 'Не удалось удалить запись.')
+            );
           }
         },
       },
@@ -88,10 +99,10 @@ export default function HighlightDetailsScreen() {
   if (loading) {
     return (
       <>
-        <AppHeader title="Достопримечательность" />
+        <AppHeader title={t('highlights.detailsTitle')} />
         <ScreenBackground>
           <View style={styles.center}>
-            <Text>Загрузка…</Text>
+            <Text>{t('common.loading')}</Text>
           </View>
         </ScreenBackground>
       </>
@@ -104,7 +115,7 @@ export default function HighlightDetailsScreen() {
 
   return (
     <>
-      <AppHeader title="Достопримечательность" />
+      <AppHeader title={t('highlights.detailsTitle')} />
 
       <ScreenBackground>
         <ScrollView contentContainerStyle={styles.content}>
@@ -113,14 +124,24 @@ export default function HighlightDetailsScreen() {
           </Text>
 
           {highlight.date && (
-            <Text style={styles.meta}>Дата/время: {highlight.date}</Text>
+            <Text style={styles.meta}>
+              {t('highlights.metaDate', { value: highlight.date })}
+            </Text>
           )}
 
-          {trip && <Text style={styles.meta}>Поездка: {trip.title}</Text>}
-          {place && <Text style={styles.meta}>Место: {place.name}</Text>}
+          {trip && (
+            <Text style={styles.meta}>
+              {t('highlights.metaTrip', { title: trip.title })}
+            </Text>
+          )}
+          {place && (
+            <Text style={styles.meta}>
+              {t('highlights.metaPlace', { title: place.name })}
+            </Text>
+          )}
 
           <Text style={styles.description}>
-            {highlight.description || 'Без описания. Заметка не заполнена.'}
+            {highlight.description || t('highlights.descriptionFallback')}
           </Text>
 
           {highlight.photos.length > 0 && (
@@ -136,7 +157,7 @@ export default function HighlightDetailsScreen() {
           )}
 
           <PrimaryButton onPress={handleDelete} mode="outlined">
-            Удалить запись
+            {t('highlights.deleteButton', 'Удалить запись')}
           </PrimaryButton>
         </ScrollView>
       </ScreenBackground>
