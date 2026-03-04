@@ -42,10 +42,14 @@ async function executeSql(
     };
   }
 
-  const result = await db.runAsync(sql, params);
+  // На Android параметры лучше передавать по одному (variadic), иначе возможны сбои.
+  const result = await db.runAsync(sql, ...params);
+  const rawId = result.lastInsertRowId;
+  const insertId =
+    rawId == null ? null : typeof rawId === 'bigint' ? Number(rawId) : Number(rawId);
   return {
     rows: { _array: [] },
-    insertId: result.lastInsertRowId ?? null,
+    insertId: insertId ?? null,
     rowsAffected: result.changes,
   };
 }
@@ -209,7 +213,12 @@ export async function createPlace(data: Omit<Place, 'id' | 'createdAt'>): Promis
     ]
   );
 
-  const insertId = result.insertId!;
+  const insertId = result.insertId;
+  if (insertId == null || !Number.isInteger(insertId) || insertId < 1) {
+    throw new Error(
+      `Сохранение места: неверный id после INSERT (lastInsertRowId=${result.insertId})`
+    );
+  }
   const place = await getPlaceById(insertId);
   if (!place) {
     throw new Error('Не удалось прочитать добавленное место из базы данных');
@@ -297,7 +306,12 @@ export async function createTrip(data: Omit<Trip, 'id' | 'createdAt'>): Promise<
     ]
   );
 
-  const insertId = result.insertId!;
+  const insertId = result.insertId;
+  if (insertId == null || !Number.isInteger(insertId) || insertId < 1) {
+    throw new Error(
+      `Сохранение поездки: неверный id после INSERT (lastInsertRowId=${result.insertId})`
+    );
+  }
   const trip = await getTripById(insertId);
   if (!trip) {
     throw new Error('Не удалось прочитать добавленную поездку из базы данных');
@@ -369,7 +383,12 @@ export async function addTripPlace(data: Omit<TripPlace, 'id'>): Promise<TripPla
     ]
   );
 
-  const insertId = result.insertId!;
+  const insertId = result.insertId;
+  if (insertId == null || !Number.isInteger(insertId) || insertId < 1) {
+    throw new Error(
+      `Добавление места в поездку: неверный id после INSERT (lastInsertRowId=${result.insertId})`
+    );
+  }
   const all = await getTripPlaces(data.tripId);
   const created = all.find((tp) => tp.id === insertId);
   if (!created) {
@@ -463,7 +482,12 @@ export async function createHighlight(data: Omit<Highlight, 'id' | 'createdAt'>)
     ]
   );
 
-  const insertId = result.insertId!;
+  const insertId = result.insertId;
+  if (insertId == null || !Number.isInteger(insertId) || insertId < 1) {
+    throw new Error(
+      `Сохранение достопримечательности: неверный id после INSERT (lastInsertRowId=${result.insertId})`
+    );
+  }
   const highlightResult = await executeSql('SELECT * FROM highlights WHERE id = ?;', [insertId]);
   const rows = highlightResult.rows._array ?? [];
   if (!rows.length) {

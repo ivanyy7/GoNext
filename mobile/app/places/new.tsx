@@ -89,10 +89,11 @@ export default function NewPlaceScreen() {
 
       router.back();
     } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
       console.error('Ошибка при сохранении места', error);
       Alert.alert(
         'Ошибка',
-        'Не удалось сохранить место. Попробуй ещё раз или проверь логи консоли.'
+        `Не удалось сохранить место. ${message}`
       );
     } finally {
       setSaving(false);
