@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -9,6 +10,7 @@ import { ScreenBackground } from '@/components/ui/screen-background';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const handleOpenPlaces = () => {
     router.push('/places');
@@ -37,15 +39,21 @@ export default function HomeScreen() {
       <ScreenBackground>
         <View style={styles.container}>
           <Text variant="headlineSmall" style={styles.text}>
-            Приветствую, Иван!
+            {t('home.greeting')}
           </Text>
 
           <View style={styles.buttons}>
-            <PrimaryButton onPress={handleOpenPlaces}>Места</PrimaryButton>
-            <PrimaryButton onPress={handleOpenTrips}>Поездки</PrimaryButton>
-            <PrimaryButton onPress={handleOpenNextPlace}>Следующее место</PrimaryButton>
-            <PrimaryButton onPress={handleOpenHighlights}>Достопримечательности</PrimaryButton>
-            <PrimaryButton onPress={handleOpenSettings}>Настройки</PrimaryButton>
+            <PrimaryButton onPress={handleOpenPlaces}>{t('home.places')}</PrimaryButton>
+            <PrimaryButton onPress={handleOpenTrips}>{t('home.trips')}</PrimaryButton>
+            <PrimaryButton onPress={handleOpenNextPlace}>
+              {t('home.nextPlace')}
+            </PrimaryButton>
+            <PrimaryButton onPress={handleOpenHighlights}>
+              {t('home.highlights')}
+            </PrimaryButton>
+            <PrimaryButton onPress={handleOpenSettings}>
+              {t('home.settings')}
+            </PrimaryButton>
           </View>
         </View>
       </ScreenBackground>

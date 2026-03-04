@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { IconButton, Text } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 
 import { AppHeader } from '@/components/ui/app-header';
 import { ScreenBackground } from '@/components/ui/screen-background';
@@ -10,25 +11,25 @@ import { DarkAccentColors, useThemePreference } from '@/context/theme-preference
 export default function SettingsScreen() {
   const { mode, setMode, darkAccentIndex, setDarkAccentIndex } = useThemePreference();
   const isDark = mode === 'dark';
+  const { t, i18n } = useTranslation();
 
   return (
     <>
-      <AppHeader title="Настройки" />
+      <AppHeader title={t('settings.title')} />
 
       <ScreenBackground>
         <ScrollView contentContainerStyle={styles.content}>
           <MilkCard style={styles.section}>
             <Text variant="titleMedium" style={styles.sectionTitle}>
-              О приложении
+              {t('settings.aboutTitle')}
             </Text>
             <Text style={styles.sectionText}>
-              GoNext — дневник путешественника. Приложение работает офлайн и хранит все данные
-              локально на устройстве.
+              {t('settings.aboutText')}
             </Text>
           </MilkCard>
 
           <MilkCard style={[styles.section, styles.themeSection]}>
-            <Text style={styles.themeLabel}>Переключение темы</Text>
+            <Text style={styles.themeLabel}>{t('settings.themeToggle')}</Text>
             <IconButton
               icon={isDark ? 'weather-night' : 'white-balance-sunny'}
               size={40}
@@ -39,7 +40,7 @@ export default function SettingsScreen() {
 
           {isDark && (
             <MilkCard style={[styles.section, styles.accentSection]}>
-              <Text style={styles.accentLabel}>Основной цвет тёмной темы</Text>
+              <Text style={styles.accentLabel}>{t('settings.accentLabel')}</Text>
               <View style={styles.accentRow}>
                 {DarkAccentColors.map((color, index) => {
                   const selected = index === darkAccentIndex;
@@ -61,6 +62,45 @@ export default function SettingsScreen() {
               </View>
             </MilkCard>
           )}
+
+          <MilkCard style={[styles.section, styles.languageSection]}>
+            <Text style={styles.languageLabel}>{t('settings.languageTitle')}</Text>
+            <View style={styles.languageRow}>
+              <TouchableOpacity
+                style={[
+                  styles.languageChip,
+                  i18n.language === 'ru' && styles.languageChipActive,
+                ]}
+                onPress={() => i18n.changeLanguage('ru')}
+              >
+                <Text
+                  style={[
+                    styles.languageChipText,
+                    i18n.language === 'ru' && styles.languageChipTextActive,
+                  ]}
+                >
+                  {t('settings.languageRu')}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.languageChip,
+                  i18n.language === 'en' && styles.languageChipActive,
+                ]}
+                onPress={() => i18n.changeLanguage('en')}
+              >
+                <Text
+                  style={[
+                    styles.languageChipText,
+                    i18n.language === 'en' && styles.languageChipTextActive,
+                  ]}
+                >
+                  {t('settings.languageEn')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </MilkCard>
         </ScrollView>
       </ScreenBackground>
     </>
@@ -111,6 +151,34 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
+  },
+  languageSection: {
+    gap: 8,
+  },
+  languageLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#2A2340',
+  },
+  languageRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  languageChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+  },
+  languageChipActive: {
+    backgroundColor: '#2A2340',
+  },
+  languageChipText: {
+    color: '#2A2340',
+    fontWeight: '500',
+  },
+  languageChipTextActive: {
+    color: '#FFFFFF',
   },
 });
 

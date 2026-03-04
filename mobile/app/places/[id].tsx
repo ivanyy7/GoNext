@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Text } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -26,6 +27,7 @@ export default function PlaceDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const numericId = Number(id);
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState(true);
   const [place, setPlace] = useState<Place | null>(null);
@@ -61,7 +63,7 @@ export default function PlaceDetailsScreen() {
       try {
         const data = await getPlaceById(numericId);
         if (!data) {
-          Alert.alert('Ошибка', 'Место не найдено.');
+          Alert.alert(t('common.errorTitle'), t('places.errorPlaceNotFound', 'Место не найдено.'));
           router.back();
           return;
         }
@@ -75,7 +77,10 @@ export default function PlaceDetailsScreen() {
         setPhotos(data.photos ?? []);
       } catch (error) {
         console.error('Не удалось загрузить место', error);
-        Alert.alert('Ошибка', 'Не удалось загрузить данные места.');
+        Alert.alert(
+          t('common.errorTitle'),
+          t('places.errorLoadPlace', 'Не удалось загрузить данные места.')
+        );
         router.back();
       } finally {
         setLoading(false);
@@ -97,7 +102,7 @@ export default function PlaceDetailsScreen() {
     if (!place) return;
 
     if (!name.trim()) {
-      Alert.alert('Ошибка', 'Название места обязательно.');
+      Alert.alert(t('places.errorTitleRequired'), t('places.errorNameRequired'));
       return;
     }
 
@@ -119,8 +124,11 @@ export default function PlaceDetailsScreen() {
     } catch (error) {
       console.error('Ошибка при обновлении места', error);
       Alert.alert(
-        'Ошибка',
-        'Не удалось сохранить изменения. Попробуй ещё раз или проверь логи консоли.'
+        t('common.errorTitle'),
+        t(
+          'places.errorUpdatePlace',
+          'Не удалось сохранить изменения. Попробуй ещё раз или проверь логи консоли.'
+        )
       );
     } finally {
       setSaving(false);
@@ -130,8 +138,8 @@ export default function PlaceDetailsScreen() {
   const handleDelete = () => {
     if (!place) return;
 
-    Alert.alert('Удалить место', 'Точно удалить это место?', [
-      { text: 'Отмена', style: 'cancel' },
+    Alert.alert(t('places.deletePlace'), t('places.confirmDeletePlace', 'Точно удалить это место?'), [
+      { text: t('common.cancel'), style: 'cancel' },
       {
         text: 'Удалить',
         style: 'destructive',
@@ -157,7 +165,10 @@ export default function PlaceDetailsScreen() {
   const requestMediaPermission = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Нет доступа', 'Нужен доступ к фото, чтобы прикреплять изображения.');
+      Alert.alert(
+        t('common.errorTitle'),
+        t('places.noPhotoPermission', 'Нужен доступ к фото, чтобы прикреплять изображения.')
+      );
       return false;
     }
     return true;
@@ -179,8 +190,11 @@ export default function PlaceDetailsScreen() {
         const relativePath = await savePlacePhoto(place.id, result.assets[0].uri);
         setPhotos((prev) => [...prev, relativePath]);
       } catch (error) {
-        console.error('Не удалось сохранить фото места', error);
-        Alert.alert('Ошибка', 'Не удалось сохранить фото. Попробуй ещё раз.');
+      console.error('Не удалось сохранить фото места', error);
+      Alert.alert(
+        t('common.errorTitle'),
+        t('places.errorSavePhoto', 'Не удалось сохранить фото. Попробуй ещё раз.')
+      );
       }
     }
   };
@@ -189,7 +203,10 @@ export default function PlaceDetailsScreen() {
     const lat = parseCoordinate(latitude);
     const lon = parseCoordinate(longitude);
     if (lat == null || lon == null) {
-      Alert.alert('Нет координат', 'Сначала укажи корректные координаты места.');
+      Alert.alert(
+        t('nextPlace.noCoordsTitle'),
+        t('places.noCoordsMessage', 'Сначала укажи корректные координаты места.')
+      );
       return;
     }
 
@@ -203,17 +220,20 @@ export default function PlaceDetailsScreen() {
 
     Linking.openURL(url).catch((error) => {
       console.error('Не удалось открыть карты', error);
-      Alert.alert('Ошибка', 'Не удалось открыть навигатор.');
+      Alert.alert(
+        t('common.errorTitle'),
+        t('nextPlace.errorOpenMaps', 'Не удалось открыть навигатор.')
+      );
     });
   };
 
   if (loading) {
     return (
       <>
-        <AppHeader title="Место" />
+        <AppHeader title={t('places.detailsTitle')} />
         <ScreenBackground>
           <View style={styles.loadingContainer}>
-            <Text>Загрузка...</Text>
+            <Text>{t('common.loading')}</Text>
           </View>
         </ScreenBackground>
       </>
@@ -226,14 +246,14 @@ export default function PlaceDetailsScreen() {
 
   return (
     <>
-      <AppHeader title="Место" />
+      <AppHeader title={t('places.detailsTitle')} />
 
       <ScreenBackground>
         <ScrollView contentContainerStyle={styles.content}>
-          <FormTextInput label="Название" value={name} onChangeText={setName} />
+          <FormTextInput label={t('places.fieldName')} value={name} onChangeText={setName} />
 
           <FormTextInput
-            label="Описание"
+            label={t('places.fieldDescription')}
             value={description}
             onChangeText={setDescription}
             style={styles.input}
@@ -242,15 +262,15 @@ export default function PlaceDetailsScreen() {
 
           <View style={styles.flagsRow}>
             <LabeledSwitch
-              label="Посетить позже"
-              helperText="Отметь, если это место пока запланировано и ещё не посещено."
+              label={t('places.visitLater')}
+              helperText={t('places.visitLaterHelp')}
               value={visitLater}
               onValueChange={setVisitLater}
             />
 
             <LabeledSwitch
-              label="Понравилось"
-              helperText="Отметь, если это одно из любимых мест, к которым особенно хочется возвращаться."
+              label={t('places.liked')}
+              helperText={t('places.likedHelp')}
               value={liked}
               onValueChange={setLiked}
             />
@@ -258,7 +278,7 @@ export default function PlaceDetailsScreen() {
 
           <View style={styles.row}>
             <FormTextInput
-              label="Широта (lat)"
+              label={t('places.latitude')}
               value={latitude}
               onChangeText={(text) => {
                 const result = handleCoordinateInput(text);
@@ -270,7 +290,7 @@ export default function PlaceDetailsScreen() {
               keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
             />
             <FormTextInput
-              label="Долгота (lon)"
+              label={t('places.longitude')}
               value={longitude}
               onChangeText={(text) => {
                 const result = handleCoordinateInput(text);
@@ -285,9 +305,9 @@ export default function PlaceDetailsScreen() {
 
           <View style={styles.photosBlock}>
             <View style={styles.photosHeader}>
-              <Text variant="titleSmall">Фотографии</Text>
+              <Text variant="titleSmall">{t('places.photos')}</Text>
               <PrimaryButton compact onPress={handleAddPhoto}>
-                Добавить фото
+                {t('places.addPhoto')}
               </PrimaryButton>
             </View>
 
@@ -298,7 +318,9 @@ export default function PlaceDetailsScreen() {
             </ScrollView>
           </View>
 
-          <PrimaryButton onPress={handleOpenInMaps}>Открыть в навигаторе</PrimaryButton>
+          <PrimaryButton onPress={handleOpenInMaps}>
+            {t('places.openInMaps')}
+          </PrimaryButton>
 
           <View style={styles.buttonsRow}>
             <PrimaryButton
@@ -307,7 +329,7 @@ export default function PlaceDetailsScreen() {
               labelStyle={{ color: '#2A2340', fontWeight: '600' }}
               style={styles.buttonHalf}
             >
-              Удалить место
+              {t('places.deletePlace')}
             </PrimaryButton>
 
             <PrimaryButton
@@ -316,7 +338,7 @@ export default function PlaceDetailsScreen() {
               disabled={saving}
               style={styles.buttonHalf}
             >
-              Сохранить
+              {t('places.save')}
             </PrimaryButton>
           </View>
         </ScrollView>

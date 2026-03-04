@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Linking, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Card, Text } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 
 import { AppHeader } from '@/components/ui/app-header';
 import type { Place, Trip, TripPlace } from '@/models';
@@ -18,6 +19,7 @@ type NextPlaceState =
 export default function NextPlaceScreen() {
   const [state, setState] = useState<NextPlaceState>({ status: 'loading' });
   const [updating, setUpdating] = useState(false);
+  const { t } = useTranslation();
 
   const loadNextPlace = async () => {
     try {
@@ -45,7 +47,10 @@ export default function NextPlaceScreen() {
       setState({ status: 'ready', trip, tripPlace: next, place });
     } catch (error) {
       console.error('Не удалось определить следующее место', error);
-      Alert.alert('Ошибка', 'Не удалось загрузить следующее место. Проверь логи консоли.');
+      Alert.alert(
+        t('nextPlace.errorTitle'),
+        t('nextPlace.errorLoad', 'Не удалось загрузить следующее место. Проверь логи консоли.')
+      );
       setState({ status: 'loading' });
     }
   };
@@ -65,7 +70,10 @@ export default function NextPlaceScreen() {
     const lat = parseCoordinate(state.place.latitude);
     const lon = parseCoordinate(state.place.longitude);
     if (lat == null || lon == null) {
-      Alert.alert('Нет координат', 'У этого места пока не заданы координаты.');
+      Alert.alert(
+        t('nextPlace.noCoordsTitle'),
+        t('nextPlace.noCoordsMessage', 'У этого места пока не заданы координаты.')
+      );
       return;
     }
 
@@ -79,7 +87,10 @@ export default function NextPlaceScreen() {
 
     Linking.openURL(url).catch((error) => {
       console.error('Не удалось открыть карты', error);
-      Alert.alert('Ошибка', 'Не удалось открыть навигатор.');
+      Alert.alert(
+        t('nextPlace.errorTitle'),
+        t('nextPlace.errorOpenMaps', 'Не удалось открыть навигатор.')
+      );
     });
   };
 
@@ -95,7 +106,10 @@ export default function NextPlaceScreen() {
       await loadNextPlace();
     } catch (error) {
       console.error('Не удалось отметить место посещённым', error);
-      Alert.alert('Ошибка', 'Не удалось отметить место посещённым.');
+      Alert.alert(
+        t('nextPlace.errorTitle'),
+        t('nextPlace.errorMarkVisited', 'Не удалось отметить место посещённым.')
+      );
     } finally {
       setUpdating(false);
     }
@@ -103,7 +117,7 @@ export default function NextPlaceScreen() {
 
   return (
     <>
-      <AppHeader title="Следующее место" />
+      <AppHeader title={t('nextPlace.title')} />
 
       <ScreenBackground>
         <ScrollView contentContainerStyle={styles.content}>
@@ -111,7 +125,7 @@ export default function NextPlaceScreen() {
             <View style={styles.center}>
               <MilkCard>
                 <ActivityIndicator />
-                <Text style={styles.message}>Определяем следующую точку маршрута…</Text>
+                <Text style={styles.message}>{t('nextPlace.loading')}</Text>
               </MilkCard>
             </View>
           )}
@@ -119,9 +133,7 @@ export default function NextPlaceScreen() {
           {state.status === 'no-trips' && (
             <View style={styles.center}>
               <MilkCard>
-                <Text style={styles.message}>
-                  Пока нет ни одной поездки. Создай поездку, чтобы увидеть следующее место.
-                </Text>
+                <Text style={styles.message}>{t('nextPlace.noTrips')}</Text>
               </MilkCard>
             </View>
           )}
@@ -130,7 +142,7 @@ export default function NextPlaceScreen() {
             <View style={styles.center}>
               <MilkCard>
                 <Text style={styles.message}>
-                  В текущей поездке «{state.trip.title}» больше нет непосещённых мест.
+                  {t('nextPlace.noNextPlace', { title: state.trip.title })}
                 </Text>
               </MilkCard>
             </View>
@@ -144,26 +156,28 @@ export default function NextPlaceScreen() {
                   {state.place.description ? (
                     <Text style={styles.description}>{state.place.description}</Text>
                   ) : (
-                    <Text style={styles.description}>Описание не задано.</Text>
+                    <Text style={styles.description}>{t('nextPlace.descriptionFallback')}</Text>
                   )}
 
                   <Text style={styles.coords}>
-                    Координаты:{' '}
+                    {t('nextPlace.coordsLabel')}{' '}
                     {state.place.latitude != null && state.place.longitude != null
                       ? `${state.place.latitude}, ${state.place.longitude}`
-                      : 'не заданы'}
+                      : t('nextPlace.coordsNotSet')}
                   </Text>
                 </Card.Content>
               </Card>
 
-              <PrimaryButton onPress={handleOpenInMaps}>Открыть в навигаторе</PrimaryButton>
+              <PrimaryButton onPress={handleOpenInMaps}>
+                {t('nextPlace.openInMaps')}
+              </PrimaryButton>
 
               <PrimaryButton
                 onPress={handleMarkVisited}
                 loading={updating}
                 disabled={updating}
               >
-                Отметить как посещённое и перейти к следующему
+                {t('nextPlace.markVisited')}
               </PrimaryButton>
             </>
           )}

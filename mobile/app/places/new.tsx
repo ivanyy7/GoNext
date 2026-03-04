@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Alert, Image, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Text } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -15,6 +16,7 @@ import { LabeledSwitch } from '@/components/ui/labeled-switch';
 
 export default function NewPlaceScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -122,18 +124,18 @@ export default function NewPlaceScreen() {
 
   return (
     <>
-      <AppHeader title="Новое место" />
+      <AppHeader title={t('places.newTitle')} />
 
       <ScreenBackground>
         <ScrollView contentContainerStyle={styles.content}>
           <FormTextInput
-            label="Название"
+            label={t('places.fieldName')}
             value={name}
             onChangeText={setName}
           />
 
           <FormTextInput
-            label="Описание"
+            label={t('places.fieldDescription')}
             value={description}
             onChangeText={setDescription}
             style={styles.input}
@@ -142,15 +144,15 @@ export default function NewPlaceScreen() {
 
           <View style={styles.flagsRow}>
             <LabeledSwitch
-              label="Посетить позже"
-              helperText="Отметь, если это место пока в планах и ты ещё туда не добрался."
+              label={t('places.visitLater')}
+              helperText={t('places.visitLaterHelp')}
               value={visitLater}
               onValueChange={setVisitLater}
             />
 
             <LabeledSwitch
-              label="Понравилось"
-              helperText="Отметь, если это одно из любимых мест, к которым особенно хочется вернуться."
+              label={t('places.liked')}
+              helperText={t('places.likedHelp')}
               value={liked}
               onValueChange={setLiked}
             />
@@ -158,7 +160,7 @@ export default function NewPlaceScreen() {
 
           <View style={styles.row}>
             <FormTextInput
-              label="Широта (lat)"
+              label={t('places.latitude')}
               value={latitude}
               onChangeText={(text) => {
                 const result = handleCoordinateInput(text);
@@ -170,7 +172,7 @@ export default function NewPlaceScreen() {
               keyboardType={Platform.OS === 'ios' ? 'decimal-pad' : 'numeric'}
             />
             <FormTextInput
-              label="Долгота (lon)"
+              label={t('places.longitude')}
               value={longitude}
               onChangeText={(text) => {
                 const result = handleCoordinateInput(text);
@@ -185,9 +187,9 @@ export default function NewPlaceScreen() {
 
           <View style={styles.photosBlock}>
             <View style={styles.photosHeader}>
-              <Text variant="titleSmall">Фотографии</Text>
+              <Text variant="titleSmall">{t('places.photos')}</Text>
               <PrimaryButton compact onPress={handleAddPhoto}>
-                Добавить фото
+                {t('places.addPhoto')}
               </PrimaryButton>
             </View>
 
@@ -199,7 +201,7 @@ export default function NewPlaceScreen() {
           </View>
 
           <PrimaryButton onPress={handleSave} loading={saving} disabled={saving}>
-            Сохранить
+            {t('places.save')}
           </PrimaryButton>
         </ScrollView>
       </ScreenBackground>

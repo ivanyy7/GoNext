@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Switch, Text } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
 
 import { AppHeader } from '@/components/ui/app-header';
@@ -13,6 +14,7 @@ import { LabeledSwitch } from '@/components/ui/labeled-switch';
 
 export default function NewTripScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -52,14 +54,14 @@ export default function NewTripScreen() {
 
   return (
     <>
-      <AppHeader title="Новая поездка" />
+      <AppHeader title={t('trips.newTitle')} />
 
       <ScreenBackground>
         <ScrollView contentContainerStyle={styles.content}>
-          <FormTextInput label="Название" value={title} onChangeText={setTitle} />
+          <FormTextInput label={t('trips.fieldName')} value={title} onChangeText={setTitle} />
 
           <FormTextInput
-            label="Описание"
+            label={t('trips.fieldDescription')}
             value={description}
             onChangeText={setDescription}
             style={styles.input}
@@ -67,21 +69,25 @@ export default function NewTripScreen() {
           />
 
           <FormTextInput
-            label="Дата начала (например, 2025-06-01)"
+            label={t('trips.startDate')}
             value={startDate}
             onChangeText={setStartDate}
             style={styles.input}
           />
 
           <FormTextInput
-            label="Дата окончания (например, 2025-06-10)"
+            label={t('trips.endDate')}
             value={endDate}
             onChangeText={setEndDate}
             style={styles.input}
           />
 
           <View style={styles.row}>
-            <LabeledSwitch label="Сделать текущей поездкой" value={current} onValueChange={setCurrent} />
+            <LabeledSwitch
+              label={t('trips.currentFlag')}
+              value={current}
+              onValueChange={setCurrent}
+            />
           </View>
 
           <PrimaryButton
@@ -89,7 +95,7 @@ export default function NewTripScreen() {
             loading={saving}
             disabled={saving || !title.trim()}
           >
-            Сохранить поездку
+            {t('trips.saveTrip')}
           </PrimaryButton>
         </ScrollView>
       </ScreenBackground>
