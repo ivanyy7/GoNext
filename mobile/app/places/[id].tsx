@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  TouchableOpacity,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Switch, Text, TextInput } from 'react-native-paper';
@@ -17,6 +18,7 @@ import { PrimaryButton } from '@/components/ui/primary-button';
 import type { Place } from '@/models';
 import { deletePlace, getPlaceById, updatePlace } from '@/services/database';
 import { ScreenBackground } from '@/components/ui/screen-background';
+import { deleteAllPlacePhotos, resolvePhotoUri, savePlacePhoto } from '@/services/photo-storage';
 
 export default function PlaceDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -116,6 +118,12 @@ export default function PlaceDetailsScreen() {
         style: 'destructive',
         onPress: async () => {
           try {
+            await deleteAllPlacePhotos(place.id);
+          } catch (error) {
+            console.error('Не удалось удалить фото места с устройства', error);
+          }
+
+          try {
             await deletePlace(place.id);
             router.back();
           } catch (error) {
@@ -146,7 +154,15 @@ export default function PlaceDetailsScreen() {
     });
 
     if (!result.canceled && result.assets.length > 0) {
-      setPhotos((prev) => [...prev, result.assets[0].uri]);
+      if (!place) return;
+
+      try {
+        const relativePath = await savePlacePhoto(place.id, result.assets[0].uri);
+        setPhotos((prev) => [...prev, relativePath]);
+      } catch (error) {
+        console.error('Не удалось сохранить фото места', error);
+        Alert.alert('Ошибка', 'Не удалось сохранить фото. Попробуй ещё раз.');
+      }
     }
   };
 
@@ -196,7 +212,7 @@ export default function PlaceDetailsScreen() {
       <ScreenBackground>
         <ScrollView contentContainerStyle={styles.content}>
           <TextInput
-            label="Название"
+            label={name ? undefined : 'Название'}
             value={name}
             onChangeText={setName}
             mode="outlined"
@@ -204,7 +220,7 @@ export default function PlaceDetailsScreen() {
           />
 
           <TextInput
-            label="Описание"
+            label={description ? undefined : 'Описание'}
             value={description}
             onChangeText={setDescription}
             mode="outlined"
@@ -212,14 +228,34 @@ export default function PlaceDetailsScreen() {
             multiline
           />
 
-          <View style={styles.row}>
-            <Text>Посетить позже</Text>
-            <Switch value={visitLater} onValueChange={setVisitLater} />
-          </View>
+          <View style={styles.flagsRow}>
+            <View style={styles.flagRow}>
+              <TouchableOpacity
+                onPress={() =>
+                  Alert.alert(
+                    'Посетить позже',
+                    'Отметь, если это место пока запланировано и ещё не посещено.'
+                  )
+                }
+              >
+                <Text style={styles.flagTitle}>Посетить позже</Text>
+              </TouchableOpacity>
+              <Switch value={visitLater} onValueChange={setVisitLater} />
+            </View>
 
-          <View style={styles.row}>
-            <Text>Понравилось</Text>
-            <Switch value={liked} onValueChange={setLiked} />
+            <View style={styles.flagRow}>
+              <TouchableOpacity
+                onPress={() =>
+                  Alert.alert(
+                    'Понравилось',
+                    'Отметь, если это одно из любимых мест, к которым особенно хочется возвращаться.'
+                  )
+                }
+              >
+                <Text style={styles.flagTitle}>Понравилось</Text>
+              </TouchableOpacity>
+              <Switch value={liked} onValueChange={setLiked} />
+            </View>
           </View>
 
           <View style={styles.row}>
@@ -250,21 +286,33 @@ export default function PlaceDetailsScreen() {
             </View>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {photos.map((uri) => (
-                <Image key={uri} source={{ uri }} style={styles.photo} />
+            {photos.map((uri) => (
+              <Image key={uri} source={{ uri: resolvePhotoUri(uri) }} style={styles.photo} />
               ))}
             </ScrollView>
           </View>
 
           <PrimaryButton onPress={handleOpenInMaps}>Открыть в навигаторе</PrimaryButton>
 
-          <PrimaryButton onPress={handleSave} loading={saving} disabled={saving}>
-            Сохранить
-          </PrimaryButton>
+          <View style={styles.buttonsRow}>
+            <PrimaryButton
+              onPress={handleDelete}
+              mode="outlined"
+              labelStyle={{ color: '#2A2340', fontWeight: '600' }}
+              style={styles.buttonHalf}
+            >
+              Удалить место
+            </PrimaryButton>
 
-          <PrimaryButton onPress={handleDelete} mode="outlined">
-            Удалить место
-          </PrimaryButton>
+            <PrimaryButton
+              onPress={handleSave}
+              loading={saving}
+              disabled={saving}
+              style={styles.buttonHalf}
+            >
+              Сохранить
+            </PrimaryButton>
+          </View>
         </ScrollView>
       </ScreenBackground>
     </>
@@ -280,6 +328,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
+    paddingBottom: 8,
     gap: 16,
   },
   input: {
@@ -290,6 +339,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 8,
+  },
+  flagsRow: {
+    flexDirection: 'row',
+    flex: 1,
+    gap: 16,
+    marginBottom: 4,
+  },
+  flagRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  flagTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#2A2340',
   },
   coordInput: {
     flex: 1,
@@ -308,6 +374,15 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 8,
     marginRight: 8,
+  },
+  buttonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginTop: 8,
+  },
+  buttonHalf: {
+    flex: 1,
   },
 });
 

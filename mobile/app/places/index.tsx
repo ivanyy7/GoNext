@@ -79,9 +79,12 @@ export default function PlacesListScreen() {
                   title={item.name}
                   description={item.description ?? undefined}
                   onPress={() => handleOpenPlace(item.id)}
+                  titleStyle={styles.itemTitle}
+                  descriptionStyle={styles.itemDescription}
                   left={(props) => (
                     <List.Icon
                       {...props}
+                      color="#E78A1F"
                       icon={
                         item.liked ? 'star' : item.visitLater ? 'clock-outline' : 'map-marker'
                       }
@@ -131,6 +134,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 16,
     bottom: 16,
+  },
+  itemTitle: {
+    color: '#2A2340',
+    fontWeight: '500',
+  },
+  itemDescription: {
+    color: '#4A4658',
   },
 });
 

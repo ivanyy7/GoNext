@@ -25,6 +25,8 @@
 - `mobile/models/` — доменные модели данных (`Place`, `Trip`, `TripPlace`, `Highlight`), описанные в виде TypeScript‑типов.
 - `mobile/services/database.native.ts` — слой доступа к локальной базе SQLite для мобильных платформ: инициализация таблиц и CRUD‑операции для всех сущностей, реализованные поверх нового async‑API `expo-sqlite` (`openDatabaseAsync`, `getAllAsync`, `runAsync`) с единым вспомогательным `executeSql`.
 - `mobile/services/database.web.ts` — упрощённая веб-реализация без SQLite (заглушка для отладки в браузере, данные не сохраняются).
+- `mobile/services/photo-storage.native.ts` — сервис для локального хранения фотографий на мобильных платформах: копирует выбранные изображения в папку приложения (`documentDirectory/photos/...`) и возвращает относительные пути для сохранения в БД.
+- `mobile/services/photo-storage.ts` — заглушка для web/не‑native сред, чтобы код, вызывающий хранение фотографий, не ломал сборку и запуск в браузере.
 
 #### Этап 3 (режим «Места»)
 

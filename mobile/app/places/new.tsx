@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Image, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Image, Platform, ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Switch, Text, TextInput } from 'react-native-paper';
 import { useRouter } from 'expo-router';
@@ -7,8 +7,9 @@ import { useRouter } from 'expo-router';
 import { AppHeader } from '@/components/ui/app-header';
 import { PrimaryButton } from '@/components/ui/primary-button';
 import type { Place } from '@/models';
-import { createPlace } from '@/services/database';
+import { createPlace, updatePlace } from '@/services/database';
 import { ScreenBackground } from '@/components/ui/screen-background';
+import { savePlacePhoto, resolvePhotoUri } from '@/services/photo-storage';
 
 export default function NewPlaceScreen() {
   const router = useRouter();
@@ -39,17 +40,32 @@ export default function NewPlaceScreen() {
 
     setSaving(true);
     try {
-      const data: Omit<Place, 'id' | 'createdAt'> = {
+      // Сначала создаём место без фотографий, чтобы получить его id.
+      const baseData: Omit<Place, 'id' | 'createdAt'> = {
         name: name.trim(),
         description: description.trim() || null,
         visitLater,
         liked,
         latitude: lat,
         longitude: lon,
-        photos,
+        photos: [],
       };
 
-      await createPlace(data);
+      const place = await createPlace(baseData);
+
+      // Затем копируем выбранные фото в нашу папку и сохраняем относительные пути в БД.
+      if (photos.length > 0) {
+        const savedPhotoPaths: string[] = [];
+        for (const uri of photos) {
+          const relativePath = await savePlacePhoto(place.id, uri);
+          savedPhotoPaths.push(relativePath);
+        }
+
+        if (savedPhotoPaths.length > 0) {
+          await updatePlace(place.id, { photos: savedPhotoPaths });
+        }
+      }
+
       router.back();
     } catch (error) {
       console.error('Ошибка при сохранении места', error);
@@ -92,7 +108,7 @@ export default function NewPlaceScreen() {
       <ScreenBackground>
         <ScrollView contentContainerStyle={styles.content}>
           <TextInput
-            label="Название"
+            label={name ? undefined : 'Название'}
             value={name}
             onChangeText={setName}
             mode="outlined"
@@ -100,7 +116,7 @@ export default function NewPlaceScreen() {
           />
 
           <TextInput
-            label="Описание"
+            label={description ? undefined : 'Описание'}
             value={description}
             onChangeText={setDescription}
             mode="outlined"
@@ -108,14 +124,34 @@ export default function NewPlaceScreen() {
             multiline
           />
 
-          <View style={styles.row}>
-            <Text>Посетить позже</Text>
-            <Switch value={visitLater} onValueChange={setVisitLater} />
-          </View>
+          <View style={styles.flagsRow}>
+            <View style={styles.flagRow}>
+              <TouchableOpacity
+                onPress={() =>
+                  Alert.alert(
+                    'Посетить позже',
+                    'Отметь, если это место пока в планах и ты ещё туда не добрался.'
+                  )
+                }
+              >
+                <Text style={styles.flagTitle}>Посетить позже</Text>
+              </TouchableOpacity>
+              <Switch value={visitLater} onValueChange={setVisitLater} />
+            </View>
 
-          <View style={styles.row}>
-            <Text>Понравилось</Text>
-            <Switch value={liked} onValueChange={setLiked} />
+            <View style={styles.flagRow}>
+              <TouchableOpacity
+                onPress={() =>
+                  Alert.alert(
+                    'Понравилось',
+                    'Отметь, если это одно из любимых мест, к которым особенно хочется вернуться.'
+                  )
+                }
+              >
+                <Text style={styles.flagTitle}>Понравилось</Text>
+              </TouchableOpacity>
+              <Switch value={liked} onValueChange={setLiked} />
+            </View>
           </View>
 
           <View style={styles.row}>
@@ -147,7 +183,7 @@ export default function NewPlaceScreen() {
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {photos.map((uri) => (
-                <Image key={uri} source={{ uri }} style={styles.photo} />
+                <Image key={uri} source={{ uri: resolvePhotoUri(uri) }} style={styles.photo} />
               ))}
             </ScrollView>
           </View>
@@ -174,6 +210,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 8,
+  },
+  flagsRow: {
+    flexDirection: 'row',
+    gap: 16,
+    marginBottom: 4,
+  },
+  flagRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  flagTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#2A2340',
   },
   coordInput: {
     flex: 1,
